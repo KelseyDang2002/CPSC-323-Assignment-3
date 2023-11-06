@@ -1,0 +1,21 @@
+function AddNums(numOne integer, numTwo integer){
+	ret numOne + numTwo;
+}
+
+function SubNums(numOne integer, numTwo integer){
+	ret numOne - numTwo;
+}
+
+function ConvertToCelcius(tempInF real){
+	ret tempInF * (5/9) + 32;
+}
+#
+	[* Main program *]
+	integer numOne, numTwo;
+	real tempInF;
+	get(numOne, numTwo, tempInF);
+	put(AddNums(numOne, numTwo));
+	put(SubNums(numOne, numTwo));
+	put(ConvertToCelcius(tempInF));
+	ret;
+#

@@ -1,0 +1,340 @@
+Rat23F Syntax Rules
+
+R1) <Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #
+
+R2) <Opt Function Definitions> ::= <Function Definitions> | <Empty>
+
+R3) <Function Definitions> ::= <Function> | <Function> <Function Definitions>
+
+R4) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+
+R5) <Opt Parameter List> ::= <Parameter List> | <Empty>
+
+R6) <Parameter List> ::= <Parameter> | <Parameter> , <Parameter List>
+
+R7) <Parameter> ::= <IDs> <Qualifier>
+
+R8) <Qualifier> ::= integer | bool | real
+
+R9) <Body> ::= { <Statement List> }
+
+R10) <Opt Declaration List> ::= <Declaration List> | <Empty>
+
+R11) <Declaration List> ::= <Declaration> ; | <Declaration> ; <Declaration List>
+
+R12) <Declaration> ::= <Qualifier> <IDs>
+
+R13) <IDs> ::= <Identifier> | <Identifier>, <IDs>
+
+R14) <Statement List> ::= <Statement> | <Statement> <Statement List>
+
+R15) <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
+
+R16) <Compound> ::= { <Statement List> }
+
+R17) <Assign> ::= <Identifier> = <Expression> ;
+
+R18) <If> ::= if ( <Condition> ) <Statement> endif |
+	      if ( <Condition> ) <Statement> else <Statement> endif
+
+R19) <Return> ::= ret ; | ret <Expression> ;
+
+R20) <Print> ::= put ( <Expression> );
+
+R21) <Scan> ::= get ( <IDs> );
+
+R22) <While> ::= while ( <Condition> ) <Statement>
+
+R23) <Condition> ::= <Expression> <Relop> <Expression>
+
+R24) <Relop> ::= == | != | > | < | <= | =>
+
+R25) <Expression> ::= <Expression> + <Term> | <Expression> - <Term> | <Term>
+
+R26) <Term> ::= <Term> * <Factor> | <Term> / <Factor> | <Factor>
+
+R27) <Factor> ::= - <Primary> | <Primary>
+
+R28) <Primary> ::= <Identifier> | <Integer> | <Identifier> ( <IDs> ) | ( <Expression> ) | <Real> | true | false
+
+R29) <Empty> ::= epsilon
+
+---------------------------------------------------------------------------------------------------------------------
+
+Separate each | statement
+
+R1) <Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #
+
+R2) <Opt Function Definitions> ::= <Function Definitions> |
+				   <Empty>
+
+R3) <Function Definitions> ::= <Function> |
+			       <Function> <Function Definitions>
+
+R4) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+
+R5) <Opt Parameter List> ::= <Parameter List> |
+			     <Empty>
+
+R6) <Parameter List> ::= <Parameter> |
+			 <Parameter> , <Parameter List>
+
+R7) <Parameter> ::= <IDs> <Qualifier>
+
+R8) <Qualifier> ::= integer |
+		    bool |
+		    real
+
+R9) <Body> ::= { <Statement List> }
+
+R10) <Opt Declaration List> ::= <Declaration List> |
+				<Empty>
+
+R11) <Declaration List> ::= <Declaration> ; |
+			    <Declaration> ; <Declaration List>
+
+R12) <Declaration> ::= <Qualifier> <IDs>
+
+R13) <IDs> ::= <Identifier> |
+	       <Identifier>, <IDs>
+
+R14) <Statement List> ::= <Statement> |
+			  <Statement> <Statement List>
+
+R15) <Statement> ::= <Compound> |
+		     <Assign> |
+		     <If> |
+		     <Return> |
+		     <Print> |
+		     <Scan> |
+		     <While>
+
+R16) <Compound> ::= { <Statement List> }
+
+R17) <Assign> ::= <Identifier> = <Expression> ;
+
+R18) <If> ::= if ( <Condition> ) <Statement> endif |
+	      if ( <Condition> ) <Statement> else <Statement> endif
+
+R19) <Return> ::= ret ; | 
+		  ret <Expression> ;
+
+R20) <Print> ::= put ( <Expression> );
+
+R21) <Scan> ::= get ( <IDs> );
+
+R22) <While> ::= while ( <Condition> ) <Statement>
+
+R23) <Condition> ::= <Expression> <Relop> <Expression>
+
+R24) <Relop> ::= == | 
+		 != |
+		 > | 
+		 < | 
+		 <= | 
+		 =>
+
+R25) <Expression> ::= <Expression> + <Term> |
+		      <Expression> - <Term> |
+		      <Term>
+
+R26) <Term> ::= <Term> * <Factor> |
+		<Term> / <Factor> |
+		<Factor>
+
+R27) <Factor> ::= - <Primary> |
+		  <Primary>
+
+R28) <Primary> ::= <Identifier> |
+		   <Integer> |
+		   <Identifier> ( <IDs> ) |
+		   ( <Expression> ) |
+		   <Real> |
+		   true |
+		   false
+
+R29) <Empty> ::= epsilon
+
+---------------------------------------------------------------------------------------------------------------------
+
+Left Recursion At The Following Rules
+
+R25) <Expression> ::= <Expression> + <Term> | <Expression> - <Term> | <Term>
+
+Remove Left Recursion:
+	New nonterminal = <Expression Prime>
+	<Expression> ::= <Term> <Expression Prime>
+	<Expression Prime> ::= + <Term> <Expression Prime> | epsilon
+	<Expression Prime> ::= - <Term> <Expression Prime> | epsilon
+	or
+	<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | epsilon
+
+R26) <Term> ::= <Term> * <Factor> | <Term> / <Factor> | <Factor>
+
+Remove Left Recursion:
+	New nonterminal = <Term Prime>
+	<Term> ::= <Factor> <Term Prime>
+	<Term Prime> ::= * <Factor> <Term Prime> | epsilon
+	<Term Prime> ::= / <Factor> <Term Prime> | epsilon
+	or
+	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | epsilon
+
+---------------------------------------------------------------------------------------------------------------------
+
+Syntax Rules After Removing Left Recursion
+
+R1) <Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #
+R2) <Opt Function Definitions> ::= <Function Definitions> | <Empty>
+R3) <Function Definitions> ::= <Function> | <Function> <Function Definitions>
+R4) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+R5) <Opt Parameter List> ::= <Parameter List> | <Empty>
+R6) <Parameter List> ::= <Parameter> | <Parameter> , <Parameter List>
+R7) <Parameter> ::= <IDs> <Qualifier>
+R8) <Qualifier> ::= integer | bool | real
+R9) <Body> ::= { <Statement List> }
+R10) <Opt Declaration List> ::= <Declaration List> | <Empty>
+R11) <Declaration List> ::= <Declaration> ; | <Declaration> ; <Declaration List>
+R12) <Declaration> ::= <Qualifier> <IDs>
+R13) <IDs> ::= <Identifier> | <Identifier>, <IDs>
+R14) <Statement List> ::= <Statement> | <Statement> <Statement List>
+R15) <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
+R16) <Compound> ::= { <Statement List> }
+R17) <Assign> ::= <Identifier> = <Expression> ;
+R18) <If> ::= if ( <Condition> ) <Statement> endif |
+	      if ( <Condition> ) <Statement> else <Statement> endif
+R19) <Return> ::= ret ; | ret <Expression> ;
+R20) <Print> ::= put ( <Expression> );
+R21) <Scan> ::= get ( <IDs> );
+R22) <While> ::= while ( <Condition> ) <Statement>
+R23) <Condition> ::= <Expression> <Relop> <Expression>
+R24) <Relop> ::= == | != | > | < | <= | =>
+
+>	R25) <Expression> ::= <Term> <Expression Prime>
+>	R26) <Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | epsilon
+
+>	R27) <Term> ::= <Factor> <Term Prime>
+>	R28) <Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | epsilon
+
+R29) <Factor> ::= - <Primary> | <Primary>
+R30) <Primary> ::= <Identifier> | <Integer> | <Identifier> ( <IDs> ) | ( <Expression> ) |
+		   <Real> | true | false
+R31) <Empty> ::= epsilon
+
+---------------------------------------------------------------------------------------------------------------------
+
+Backtracking Occurs At The Following Rules
+
+R3) <Function Definitions> ::= <Function> | <Function> <Function Definitions>
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <Function Definitions Prime>
+	<Function Definitions> ::= <Function> <Function Definitions Prime>
+	<Function Definitions Prime> ::= epsilon | <Function Definitions>
+
+R6) <Parameter List> ::= <Parameter> | <Parameter> , <Parameter List>
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <Parameter List Prime>
+	<Parameter List> ::= <Parameter> <Parameter List Prime>
+	<Parameter List Prime> ::= epsilon | , <Parameter List>
+
+R11) <Declaration List> ::= <Declaration> ; | <Declaration> ; <Declaration List>
+
+Remove Backtracking With Ledt Factoring:
+	New nonterminal = <Declaration List Prime>
+	<Declaration List> ::= <Declaration> ; <Declaration List Prime>
+	<Declaration List Prime> ::= epsilon | <Declaration List>
+
+R13) <IDs> ::= <Identifier> | <Identifier>, <IDs>
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <IDs Prime>
+	<IDs> ::= <Identifier> <IDs Prime>
+	<IDs Prime> ::= epsilon | , <IDs>
+
+R14) <Statement List> ::= <Statement> | <Statement> <Statement List>
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <Statement List Prime>
+	<Statement List> ::= <Statement> <Statement List Prime>
+	<Statement List Prime> ::= epsilon | <Statement List>
+
+R18) <If> ::= if ( <Condition> ) <Statement> endif |
+	      if ( <Condition> ) <Statement> else <Statement> endif
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <If Prime>
+	<If> ::= if ( <Condition> ) <Statement> <If Prime>
+	<If Prime> ::= endif | else <Statement> endif
+
+R19) <Return> ::= ret ; | ret <Expression> ;
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <Return Prime>
+	<Return> ::= ret <Return Prime>
+	<Return Prime> ::= ; | <Expression> ;
+
+R30) <Primary> ::= <Identifier> | <Integer> | <Identifier> ( <IDs> ) | ( <Expression> ) | <Real> | true | false
+
+Remove Backtracking With Left Factoring:
+	New nonterminal = <Primary Prime>
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary Prime> ::= epsilon | ( <IDs> )
+
+---------------------------------------------------------------------------------------------------------------------
+
+Syntax Rules After Removing Left Recursion And Backtracking
+
+R1) <Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #
+R2) <Opt Function Definitions> ::= <Function Definitions> | <Empty>
+
+>	R3) <Function Definitions> ::= <Function> <Function Definitions Prime>
+>	R4) <Function Definitions Prime> ::= epsilon | <Function Definitions>
+
+R5) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+R6) <Opt Parameter List> ::= <Parameter List> | <Empty>
+
+>	R7) <Parameter List> ::= <Parameter> <Parameter List Prime>
+>	R8) <Parameter List Prime> ::= epsilon | , <Parameter List>
+
+R9) <Parameter> ::= <IDs> <Qualifier>
+R10) <Qualifier> ::= integer | bool | real
+R11) <Body> ::= { <Statement List> }
+R12) <Opt Declaration List> ::= <Declaration List> | <Empty>
+
+>	R13) <Declaration List> ::= <Declaration> ; <Declaration List Prime>
+>	R14) <Declaration List Prime> ::= epsilon | <Declaration List>
+
+R15) <Declaration> ::= <Qualifier> <IDs>
+
+>	R16) <IDs> ::= <Identifier> <IDs Prime>
+>	R17) <IDs Prime> ::= epsilon | , <IDs>
+
+>	R18) <Statement List> ::= <Statement> <Statement List Prime>
+>	R19) <Statement List Prime> ::= epsilon | <Statement List>
+
+R20) <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
+R21) <Compound> ::= { <Statement List> }
+R22) <Assign> ::= <Identifier> = <Expression> ;
+
+>	R23) <If> ::= if ( <Condition> ) <Statement> <If Prime>
+>	R24) <If Prime> ::= endif | else <Statement> endif
+
+>	R25) <Return> ::= ret <Return Prime>
+>	R26) <Return Prime> ::= ; | <Expression> ;
+
+R27) <Print> ::= put ( <Expression> );
+R28) <Scan> ::= get ( <IDs> );
+R29) <While> ::= while ( <Condition> ) <Statement>
+R30) <Condition> ::= <Expression> <Relop> <Expression>
+R31) <Relop> ::= == | != | > | < | <= | =>
+R32) <Expression> ::= <Term> <Expression Prime>
+R33) <Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | epsilon
+R34) <Term> ::= <Factor> <Term Prime>
+R35) <Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | epsilon
+R36) <Factor> ::= - <Primary> | <Primary>
+
+>	R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+>	R38) <Primary Prime> ::= epsilon | ( <IDs> )
+
+R39) <Empty> ::= epsilon
