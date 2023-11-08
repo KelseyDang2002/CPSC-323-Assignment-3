@@ -1,0 +1,79 @@
+RAT23F Simplified Syntax Rules
+
+R1) <Rat23F> ::= # <Opt Declaration List> <Statement List> #
+
+R2) REMOVED
+
+R3) REMOVED
+
+R4) REMOVED
+
+R5) REMOVED
+
+R6) REMOVED
+
+R7) REMOVED
+
+R8) REMOVED
+
+R9) REMOVED
+
+R10) <Qualifier> ::= integer | bool 
+
+R11) Removed
+
+R12) <Opt Declaration List> ::= <Declaration List> | <Empty>
+
+R13) <Declaration List> ::= <Declaration> ; <Declaration List Prime>
+
+R14) <Declaration List Prime> ::= epsilon | <Declaration List>
+
+R15) <Declaration> ::= <Qualifier> <IDs>
+
+R16) <IDs> ::= <Identifier> <IDs Prime>
+	
+R17) <IDs Prime> ::= epsilon | , <IDs>
+
+R18) <Statement List> ::= <Statement> <Statement List Prime>
+
+R19) <Statement List Prime> ::= epsilon | <Statement List>
+
+R20) <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
+
+R21) <Compound> ::= { <Statement List> }
+
+R22) <Assign> ::= <Identifier> = <Expression> ;
+
+R23) <If> ::= if ( <Condition> ) <Statement> <If Prime>
+
+R24) <If Prime> ::= endif | else <Statement> endif
+
+R25) <Return> ::= ret <Return Prime>
+
+R26) <Return Prime> ::= ; | <Expression> ;
+
+R27) <Print> ::= put ( <Expression> );
+
+R28) <Scan> ::= get ( <IDs> );
+
+R29) <While> ::= while ( <Condition> ) <Statement>
+
+R30) <Condition> ::= <Expression> <Relop> <Expression>
+
+R31) <Relop> ::= == | != | > | < | <= | =>
+
+R32) <Expression> ::= <Term> <Expression Prime>
+
+R33) <Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | epsilon
+
+R34) <Term> ::= <Factor> <Term Prime>
+
+R35) <Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | epsilon
+
+R36) <Factor> ::= - <Primary> | <Primary>
+
+R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+
+R38) <Primary Prime> ::= epsilon | ( <IDs> )
+
+R39) <Empty> ::= epsilon
