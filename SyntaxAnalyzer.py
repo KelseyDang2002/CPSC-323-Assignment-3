@@ -77,9 +77,9 @@ def Rat23F():
     print_token()
     # print rule
     if switch == False:
-        print("\t<Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #")
+        print("\t<Rat23F> ::= # <Opt Declaration List> <Statement List> #")
         with open(output_file, "a") as file:
-            file.write("\t<Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #\n")
+            file.write("\t<Rat23F> ::=  # <Opt Declaration List> <Statement List> #\n")
     if current_token['lexeme'] == '#':
         get_next_token()
         print_token()
@@ -89,7 +89,6 @@ def Rat23F():
             get_next_token()
             print_token()
         else:
-            
             print(f"Error: Expected '#' at line {current_token['line']}.")
             print(f"Reading token:", end="")
             with open(output_file, "a") as file:

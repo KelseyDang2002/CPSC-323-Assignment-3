@@ -1,14 +1,3 @@
-function AddNums(numOne integer, numTwo integer){
-	ret numOne + numTwo;
-}
-
-function SubNums(numOne integer, numTwo integer){
-	ret numOne - numTwo;
-}
-
-function ConvertToCelcius(tempInF real){
-	ret tempInF * (5/9) + 32;
-}
 #
 	[* Main program *]
 	integer numOne, numTwo;

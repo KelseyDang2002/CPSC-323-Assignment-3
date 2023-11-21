@@ -1,5 +1,7 @@
 RAT23F Simplified Syntax Rules
 
+TODO: ask professor what to do in case of real 
+
 R1) <Rat23F> ::= # <Opt Declaration List> <Statement List> #
 
 R2) REMOVED
