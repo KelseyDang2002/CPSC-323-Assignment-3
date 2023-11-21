@@ -70,7 +70,7 @@ def print_token():
                 file.write(f"Token: {current_token['token']}\t\tLexeme: {current_token['lexeme']}\n")
 
 # Rule 1
-# R1) <Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #
+# R1) <Rat23F> ::= # <Opt Declaration List> <Statement List> #
 def Rat23F():
     global current_token, switch, output_file
     get_next_token()
@@ -80,8 +80,6 @@ def Rat23F():
         print("\t<Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #")
         with open(output_file, "a") as file:
             file.write("\t<Rat23F> ::= <Opt Function Definitions> # <Opt Declaration List> <Statement List> #\n")
-    # call first function
-    OptFunctionDefinitions()
     if current_token['lexeme'] == '#':
         get_next_token()
         print_token()
@@ -109,174 +107,174 @@ def Rat23F():
         print_token()
         exit_syntax_analyzer()
 
-# Rule 2
-# R2) <Opt Function Definitions> ::= <Function Definitions> | <Empty>
-def OptFunctionDefinitions():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>")
-        with open(output_file, "a") as file:
-            file.write("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>\n")
-    if current_token['lexeme'] == 'function':
-        FunctionDefinitions()
-    if current_token['lexeme'] == '#':
-        if switch == False:
-            print("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>")
-            with open(output_file, "a") as file:
-                file.write("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>\n")
-        Empty()
-    else:
-        print(f"Error: Expected 'function' or '#' at line {current_token['line']}.")
-        print(f"Reading token:", end="")
-        with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'function' or '#' at line {current_token['line']}.\n")
-            file.write(f"Reading token:")
-        print_token()
-        exit_syntax_analyzer()
+# # Rule 2
+# # R2) <Opt Function Definitions> ::= <Function Definitions> | <Empty>
+# def OptFunctionDefinitions():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>\n")
+#     if current_token['lexeme'] == 'function':
+#         FunctionDefinitions()
+#     if current_token['lexeme'] == '#':
+#         if switch == False:
+#             print("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>")
+#             with open(output_file, "a") as file:
+#                 file.write("\t<Opt Function Definitions> ::= <Function Definitions> | <Empty>\n")
+#         Empty()
+#     else:
+#         print(f"Error: Expected 'function' or '#' at line {current_token['line']}.")
+#         print(f"Reading token:", end="")
+#         with open(output_file, "a") as file:
+#             file.write(f"Error: Expected 'function' or '#' at line {current_token['line']}.\n")
+#             file.write(f"Reading token:")
+#         print_token()
+#         exit_syntax_analyzer()
 
 
-# Rule 3
-# R3) <Function Definitions> ::= <Function> <Function Definitions Prime>
-def FunctionDefinitions():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Function Definitions> ::= <Function> <Function Definitions Prime>")
-        with open(output_file, "a") as file:
-            file.write("\t<Function Definitions> ::= <Function> <Function Definitions Prime>\n")
-    Function()
-    FunctionDefinitionsPrime()
+# # Rule 3
+# # R3) <Function Definitions> ::= <Function> <Function Definitions Prime>
+# def FunctionDefinitions():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Function Definitions> ::= <Function> <Function Definitions Prime>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Function Definitions> ::= <Function> <Function Definitions Prime>\n")
+#     Function()
+#     FunctionDefinitionsPrime()
 
 
-# Rule 4
-# R4) <Function Definitions Prime> ::= <Empty> | <Function Definitions>
-def FunctionDefinitionsPrime():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Function Definitions Prime> ::= <Empty> | <Function Definitions>")
-        with open(output_file, "a") as file:
-            file.write("\t<Function Definitions Prime> ::= <Empty> | <Function Definitions>\n")
-    if current_token['lexeme'] == 'function':
-        FunctionDefinitions()
-    else:
-        Empty()
+# # Rule 4
+# # R4) <Function Definitions Prime> ::= <Empty> | <Function Definitions>
+# def FunctionDefinitionsPrime():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Function Definitions Prime> ::= <Empty> | <Function Definitions>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Function Definitions Prime> ::= <Empty> | <Function Definitions>\n")
+#     if current_token['lexeme'] == 'function':
+#         FunctionDefinitions()
+#     else:
+#         Empty()
 
-#Rule 5
-# R5) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
-def Function():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>")
-        with open(output_file, "a") as file:
-            file.write("\t<Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>\n")
-    if current_token['lexeme'] == 'function':
-        get_next_token()
-        print_token()
-        if current_token['token'] == 'identifier':
-            get_next_token()
-            print_token()
-            if current_token['lexeme'] == '(':
-                get_next_token()
-                print_token()
-                if current_token['lexeme'] != ')':
-                    OptParameterList()
-                else:
-                    Empty()
-                if current_token['lexeme'] == ')':
-                    get_next_token()
-                    print_token()
-                    if current_token['lexeme'] != '{':
-                        OptDeclarationList()
-                    else:
-                        Empty()
-                    Body()
-                else:
+# #Rule 5
+# # R5) <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+# def Function():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>\n")
+#     if current_token['lexeme'] == 'function':
+#         get_next_token()
+#         print_token()
+#         if current_token['token'] == 'identifier':
+#             get_next_token()
+#             print_token()
+#             if current_token['lexeme'] == '(':
+#                 get_next_token()
+#                 print_token()
+#                 if current_token['lexeme'] != ')':
+#                     OptParameterList()
+#                 else:
+#                     Empty()
+#                 if current_token['lexeme'] == ')':
+#                     get_next_token()
+#                     print_token()
+#                     if current_token['lexeme'] != '{':
+#                         OptDeclarationList()
+#                     else:
+#                         Empty()
+#                     Body()
+#                 else:
                     
-                    print(f"Error: Expected ')' at line {current_token['line']}.")
-                    print(f"Reading token:", end="")
-                    with open(output_file, "a") as file:
-                        file.write(f"Error: Expected ')' at line {current_token['line']}.\n")
-                        file.write(f"Reading token:")
-                        print_token()
-                    exit_syntax_analyzer()
-            else:
+#                     print(f"Error: Expected ')' at line {current_token['line']}.")
+#                     print(f"Reading token:", end="")
+#                     with open(output_file, "a") as file:
+#                         file.write(f"Error: Expected ')' at line {current_token['line']}.\n")
+#                         file.write(f"Reading token:")
+#                         print_token()
+#                     exit_syntax_analyzer()
+#             else:
                 
-                print(f"Error: Expected '(' at line {current_token['line']}.")
-                print(f"Reading token:", end="")
-                with open(output_file, "a") as file:
-                    file.write(f"Error: Expected '(' at line {current_token['line']}.\n")
-                    file.write(f"Reading token:")
-                    print_token()
-                exit_syntax_analyzer()
-        else:
+#                 print(f"Error: Expected '(' at line {current_token['line']}.")
+#                 print(f"Reading token:", end="")
+#                 with open(output_file, "a") as file:
+#                     file.write(f"Error: Expected '(' at line {current_token['line']}.\n")
+#                     file.write(f"Reading token:")
+#                     print_token()
+#                 exit_syntax_analyzer()
+#         else:
             
-            print(f"Error: Expected 'identifier' at line {current_token['line']}.")
-            print(f"Reading token:", end="")
-            with open(output_file, "a") as file:
-                file.write(f"Error: Expected 'identifier' at line {current_token['line']}.\n")
-                file.write(f"Reading token:")
-                print_token()
-            exit_syntax_analyzer()
-    else:
+#             print(f"Error: Expected 'identifier' at line {current_token['line']}.")
+#             print(f"Reading token:", end="")
+#             with open(output_file, "a") as file:
+#                 file.write(f"Error: Expected 'identifier' at line {current_token['line']}.\n")
+#                 file.write(f"Reading token:")
+#                 print_token()
+#             exit_syntax_analyzer()
+#     else:
         
-        print(f"Error: Expected 'function' keyword at line {current_token['line']}.")
-        print(f"Reading token:", end="")
-        with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'function' keyword at line {current_token['line']}.\n")
-            file.write(f"Reading token:")
-        print_token()
-        exit_syntax_analyzer()
+#         print(f"Error: Expected 'function' keyword at line {current_token['line']}.")
+#         print(f"Reading token:", end="")
+#         with open(output_file, "a") as file:
+#             file.write(f"Error: Expected 'function' keyword at line {current_token['line']}.\n")
+#             file.write(f"Reading token:")
+#         print_token()
+#         exit_syntax_analyzer()
 
 
-# Rule 6
-# R6) <Opt Parameter List> ::= <Parameter List> | <Empty>
-def OptParameterList():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Opt Parameter List> ::= <Parameter List> | <Empty>")
-        with open(output_file, "a") as file:
-            file.write("\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n")
-    ParameterList()
+# # Rule 6
+# # R6) <Opt Parameter List> ::= <Parameter List> | <Empty>
+# def OptParameterList():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Opt Parameter List> ::= <Parameter List> | <Empty>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n")
+#     ParameterList()
 
 
-# Rule 7
-# R7) <Parameter List> ::= <Parameter> <Parameter List Prime>
-def ParameterList():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Parameter List> ::= <Parameter> <Parameter List Prime>")
-        with open(output_file, "a") as file:
-            file.write("\t<Parameter List> ::= <Parameter> <Parameter List Prime>\n")
-    Parameter()
-    ParameterListPrime()
+# # Rule 7
+# # R7) <Parameter List> ::= <Parameter> <Parameter List Prime>
+# def ParameterList():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Parameter List> ::= <Parameter> <Parameter List Prime>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Parameter List> ::= <Parameter> <Parameter List Prime>\n")
+#     Parameter()
+#     ParameterListPrime()
 
 
-# Rule 8
-# R8) <Parameter List Prime> ::= <Empty> | <Parameter List>
-def ParameterListPrime():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Parameter List Prime> ::= <Empty> | <Parameter List>")
-        with open(output_file, "a") as file:
-            file.write("\t<Parameter List Prime> ::= <Empty> | <Parameter List>\n")
-    if current_token['lexeme'] == ',':
-        get_next_token()
-        print_token()
-        ParameterList()
-    else:
-        Empty()
+# # Rule 8
+# # R8) <Parameter List Prime> ::= <Empty> | <Parameter List>
+# def ParameterListPrime():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Parameter List Prime> ::= <Empty> | <Parameter List>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Parameter List Prime> ::= <Empty> | <Parameter List>\n")
+#     if current_token['lexeme'] == ',':
+#         get_next_token()
+#         print_token()
+#         ParameterList()
+#     else:
+#         Empty()
 
 
-# Rule 9
-# R9) <Parameter> ::= <IDs> <Qualifier>
-def Parameter():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Parameter> ::= <IDs> <Qualifier>")
-        with open(output_file, "a") as file:
-            file.write("\t<Parameter> ::= <IDs> <Qualifier>\n")
+# # Rule 9
+# # R9) <Parameter> ::= <IDs> <Qualifier>
+# def Parameter():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Parameter> ::= <IDs> <Qualifier>")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Parameter> ::= <IDs> <Qualifier>\n")
     
-    IDs()
-    Qualifier()
+#     IDs()
+#     Qualifier()
 
 
 # Rule 10
@@ -311,38 +309,38 @@ def Qualifier():
 
 # Rule 11
 # R11) <Body> ::= { <Statement List> }
-def Body():
-    global current_token, switch, output_file
-    if switch == False:
-        print("\t<Body> ::= { <Statement List> }")
-        with open(output_file, "a") as file:
-            file.write("\t<Body> ::= { <Statement List> }\n")
-    if current_token['lexeme'] == '{':
-        get_next_token()
-        print_token()
+# def Body():
+#     global current_token, switch, output_file
+#     if switch == False:
+#         print("\t<Body> ::= { <Statement List> }")
+#         with open(output_file, "a") as file:
+#             file.write("\t<Body> ::= { <Statement List> }\n")
+#     if current_token['lexeme'] == '{':
+#         get_next_token()
+#         print_token()
 
-        StatementList()
-        if current_token['lexeme'] == '}':
-            get_next_token()
-            print_token()
-        else:
+#         StatementList()
+#         if current_token['lexeme'] == '}':
+#             get_next_token()
+#             print_token()
+#         else:
             
-            print(f"Error: Expected '}}' at line {current_token['line']}.")
-            print(f"Reading token:", end="")
-            with open(output_file, "a") as file:
-                file.write(f"Error: Expected '}}' at line {current_token['line']}.\n")
-                file.write(f"Reading token:")
-                print_token()
-            exit_syntax_analyzer()
-    else:
+#             print(f"Error: Expected '}}' at line {current_token['line']}.")
+#             print(f"Reading token:", end="")
+#             with open(output_file, "a") as file:
+#                 file.write(f"Error: Expected '}}' at line {current_token['line']}.\n")
+#                 file.write(f"Reading token:")
+#                 print_token()
+#             exit_syntax_analyzer()
+#     else:
         
-        print(f"Error: Expected '{{' at line {current_token['line']}.")
-        print(f"Reading token:", end="")
-        with open(output_file, "a") as file:
-            file.write(f"Error: Expected '{{' at line {current_token['line']}.\n")
-            file.write(f"Reading token:")
-        print_token()
-        exit_syntax_analyzer()
+#         print(f"Error: Expected '{{' at line {current_token['line']}.")
+#         print(f"Reading token:", end="")
+#         with open(output_file, "a") as file:
+#             file.write(f"Error: Expected '{{' at line {current_token['line']}.\n")
+#             file.write(f"Reading token:")
+#         print_token()
+#         exit_syntax_analyzer()
 
 
 # Rule 12
