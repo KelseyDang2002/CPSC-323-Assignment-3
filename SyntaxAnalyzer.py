@@ -27,16 +27,110 @@ output_file = None
 
 switch = False
 
+# variables for symbol table and assembly code instructions
+MEMORY_ADDRESS = 7000
+# Use this variable to store the type to pass to the insert_symbol_table function
+LAST_IDENTIFIER_TYPE = None
+symbol_table = []
+# example of object in symbol table 
+# ['Identifier': 'x', 'Memory Location': 7000, 'Type': 'integer']
+
+
+assembly_code = []
+# example of object in assembly code list
+# ['Instruction': 'PUSHI', 'Parameter': 0]
+
+
+
 # *********************************************************************************************************************************
-# ******************************SYNTAX ANALYZER CODE STARTS HERE*******************************************************************
+# ******************************SYMBOL TABLE AND ASSEMBLY CODE STARTS HERE*********************************************************
 # *********************************************************************************************************************************
-"""All the rules and functions for the syntax analyzer are here for top down parsing"""
+"""All the rules and functions for assignment 3 are here"""
 def exit_syntax_analyzer():
     print("\nExiting Syntax Analyzer...")
     time.sleep(2)
     print("\nSyntax Analyzer Exited.")
     sys.exit(1)
 
+
+def print_token():
+    global current_token, output_file, switch
+    if switch == False:
+        if current_token['token'] == 'illegal' or current_token['token'] == 'keyword' or current_token['token'] == 'integer' or current_token['token'] == 'real' or current_token['token'] == 'operator':
+            print(f"Token: {current_token['token']}\t\t\tLexeme: {current_token['lexeme']}")
+            with open(output_file, "a") as file:
+                file.write(f"Token: {current_token['token']}\t\t\tLexeme: {current_token['lexeme']}\n")
+        else:
+            print(f"Token: {current_token['token']}\t\tLexeme: {current_token['lexeme']}")
+            with open(output_file, "a") as file:
+                file.write(f"Token: {current_token['token']}\t\tLexeme: {current_token['lexeme']}\n")
+
+
+def print_symbol_table():
+    """This function is used to print all the values in the symbol table"""
+    global output_file
+    print("\n\t\t\tSymbol Table:")
+    for i in symbol_table:
+        print("Identifier\t\tMemory Location\t\tType")
+        print(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}")
+    print("\n")
+    with open(output_file, "a") as file:
+        file.write("\n\t\t\tSymbol Table:\n")
+        for i in symbol_table:
+            file.write("Identifier\t\tMemory Location\t\tType\n")
+            file.write(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}\n")
+        file.write("\n")
+
+
+def print_assembly_code():
+    """This function is used to all the assembly code instructions"""
+    global output_file
+    print("\n\t\t\tAssembly Code Listing:")
+    for i in assembly_code:
+        print("Instruction\t\tParameter")
+        print(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}")
+    print("\n")
+    with open(output_file, "a") as file:
+        file.write("\n\t\t\tAssembly Code Listing:\n")
+        for i in assembly_code:
+            file.write("Instruction\t\tParameter\n")
+            file.write(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}\n")
+        file.write("\n")
+
+
+def check_symbol_table(identifier):
+    """This function is used to check if the identifier is already in the symbol table"""
+    for i in symbol_table:
+        if i['Identifier'] == identifier:
+            return True
+    return False
+
+
+def insert_symbol_table(identifier, memory_location, type):
+    """This function is used to insert a new identifier into the symbol table"""
+    global symbol_table
+    if check_symbol_table(identifier):
+        # perhaps instead of throwing error just update the memory location 
+        print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
+        print(f"Reading token:", end="")
+        with open(output_file, "a") as file:
+            file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
+            file.write(f"Reading token:")
+        print_token()
+        exit_syntax_analyzer()
+    else:
+        symbol_table.append({'Identifier': identifier, 'Memory Location': memory_location, 'Type': type})
+
+
+# *********************************************************************************************************************************
+# ******************************SYMBOL TABLE AND ASSEMBLY CODE ENDS HERE***********************************************************
+# *********************************************************************************************************************************
+
+
+# *********************************************************************************************************************************
+# ******************************SYNTAX ANALYZER CODE STARTS HERE*******************************************************************
+# *********************************************************************************************************************************
+"""All the rules and functions for the syntax analyzer are here for top down parsing"""
 def change_switch():
     global switch
     if switch == False:
@@ -57,17 +151,6 @@ def get_next_token():
         # exit_syntax_analyzer()
     
 
-def print_token():
-    global current_token,  output_file, switch
-    if switch == False:
-        if current_token['token'] == 'illegal' or current_token['token'] == 'keyword' or current_token['token'] == 'integer' or current_token['token'] == 'real' or current_token['token'] == 'operator':
-            print(f"Token: {current_token['token']}\t\t\tLexeme: {current_token['lexeme']}")
-            with open(output_file, "a") as file:
-                file.write(f"Token: {current_token['token']}\t\t\tLexeme: {current_token['lexeme']}\n")
-        else:
-            print(f"Token: {current_token['token']}\t\tLexeme: {current_token['lexeme']}")
-            with open(output_file, "a") as file:
-                file.write(f"Token: {current_token['token']}\t\tLexeme: {current_token['lexeme']}\n")
 
 # Rule 1
 # R1) <Rat23F> ::= # <Opt Declaration List> <Statement List> #
@@ -1176,11 +1259,10 @@ def analyze_file():
                 token_index = 0  # Reset the token index to 0
                 read_file(file_name)
                 commentRemoval(words)
-                # TODO: remove print_tokens(tokens) and write_tokens(tokens) before submitting
-                # print_tokens(tokens)
-                # write_tokens(tokens)
-                # TODO: add rat23f() call here
-                Rat23F()
+                Rat23F()        # Run the syntax analyzer
+                # TODO: check that this works 
+                # print_symbol_table()
+                # print_assembly_code()
                 break
         except FileNotFoundError:
             print(f"The file '{file_name}' was not found. Please enter a valid file name.")
@@ -1191,7 +1273,7 @@ def analyze_file():
 
 def main():
     # User interface
-    print("\nWelcome to our Syntax Analyzer!")
+    print("\nWelcome to our Assignment 3!")
 
     # call main function to analyze a file 
     analyze_file()

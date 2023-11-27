@@ -42,7 +42,7 @@ Token: identifier		Lexeme: i
 	<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
 	<Assign> ::= <Identifier> = <Expression> ;
 Token: operator			Lexeme: =
-Token: real			Lexeme: 1.53
+Token: integer			Lexeme: 1
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
