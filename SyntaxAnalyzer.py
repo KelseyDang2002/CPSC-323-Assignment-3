@@ -122,6 +122,21 @@ def insert_symbol_table(identifier, memory_location, type):
         symbol_table.append({'Identifier': identifier, 'Memory Location': memory_location, 'Type': type})
 
 
+def get_address(identifier):
+    """This function is used to get the memory location of an identifier in the symbol table"""
+    for i in symbol_table:
+        if i['Identifier'] == identifier:
+            return i['Memory Location']
+    return None
+
+
+def gen_instruction(instruction, parameter):
+    """This function is used to generate assembly code instructions"""
+    global assembly_code
+    # need to handle different instructions 
+    # if instruction == 'PUSHI': for example
+    assembly_code.append({'Instruction': instruction, 'Parameter': parameter})
+
 # *********************************************************************************************************************************
 # ******************************SYMBOL TABLE AND ASSEMBLY CODE ENDS HERE***********************************************************
 # *********************************************************************************************************************************
