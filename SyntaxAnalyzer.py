@@ -205,7 +205,7 @@ def Rat23F():
         exit_syntax_analyzer()
 
 
-# Rule 2
+# Rule 10
 # R10) <Qualifier> ::= integer | bool | real
 def Qualifier():
     global current_token, switch, output_file
@@ -235,7 +235,7 @@ def Qualifier():
         exit_syntax_analyzer()
 
 
-# Rule 3
+# Rule 12
 # R12) <Opt Declaration List> ::= <Declaration List> | <Empty>
 def OptDeclarationList():
     global current_token, switch, output_file
@@ -247,7 +247,7 @@ def OptDeclarationList():
     Empty()
 
 
-# Rule 4
+# Rule 13
 # R13) <Declaration List> ::= <Declaration> ; <Declaration List Prime>
 def DeclarationList():
     global current_token, switch, output_file
