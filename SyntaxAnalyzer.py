@@ -130,11 +130,38 @@ def get_address(identifier):
     return None
 
 
+# def back_patch(jump_address)
+
+
+# def push_jumpstack(instruction_address)
+
+
 def gen_instruction(instruction, parameter):
     """This function is used to generate assembly code instructions"""
     global assembly_code
     # need to handle different instructions 
     # if instruction == 'PUSHI': for example
+    #
+    # Operator      Operand
+    # ____________________________________
+    # I1) PUSHI     {Integer Value}
+    # I2) PUSHM     {Memory Address}
+    # I3) POPM      {Memory Address}
+    # I4) STDOUT    None
+    # I5) STDIN     None
+    # I6) ADD       None
+    # I7) SUB       None
+    # I8) MUL       None
+    # I9) DIV       None
+    # I10) GRT      None
+    # I11) LES      None
+    # I12) EQU      None
+    # I13) NEQ      None
+    # I14) GEQ      None
+    # I15) LEQ      None
+    # I16) JUMPZ    {Instruction Location} *could be unknown initially*
+    # I17) JUMP     {Instruction Location}
+    # I18) LABEL    None
     assembly_code.append({'Instruction': instruction, 'Parameter': parameter})
 
 # *********************************************************************************************************************************
@@ -205,7 +232,7 @@ def Rat23F():
         exit_syntax_analyzer()
 
 
-# Rule 2
+# Rule 10
 # R10) <Qualifier> ::= integer | bool | real
 def Qualifier():
     global current_token, switch, output_file
@@ -235,7 +262,7 @@ def Qualifier():
         exit_syntax_analyzer()
 
 
-# Rule 3
+# Rule 12
 # R12) <Opt Declaration List> ::= <Declaration List> | <Empty>
 def OptDeclarationList():
     global current_token, switch, output_file
@@ -247,7 +274,7 @@ def OptDeclarationList():
     Empty()
 
 
-# Rule 4
+# Rule 13
 # R13) <Declaration List> ::= <Declaration> ; <Declaration List Prime>
 def DeclarationList():
     global current_token, switch, output_file
@@ -444,12 +471,14 @@ def Assign():
         with open(output_file, "a") as file:
             file.write("\t<Assign> ::= <Identifier> = <Expression> ;\n")
     if current_token['token'] == 'identifier':
+        # insert_symbol_table(idenifier, memory_address, type)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '=':
             get_next_token()
             print_token()
             Expression()
+            # gen_instruction(POPM, MEMORY_ADDRESS)
             if current_token['lexeme'] == ';':
                 get_next_token()
                 print_token()
@@ -501,7 +530,7 @@ def If():
                 get_next_token()
                 print_token()
                 Statement()
-
+                # back_patch(instruction_address)
                 IfPrime()
             else:
                 
@@ -637,6 +666,7 @@ def Print_put():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
+                    # gen_instruction(STDOUT, None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -695,6 +725,7 @@ def Scan():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
+                    # gen_instruction(STDIN, None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -741,6 +772,8 @@ def While():
         with open(output_file, "a") as file:
             file.write("\t<While> ::= while ( <Condition> ) <Statement>\n")
     if current_token['lexeme'] == 'while':
+        # get_address(identifier)
+        # gen_instruction(LABEL, None)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '(':
@@ -751,6 +784,8 @@ def While():
                 get_next_token()
                 print_token()
                 Statement()
+                # gen_instruction(JUMP, instruction_location)
+                # back_patch(instruction_address) ???
             else:
                 
                 print(f"Error: Expected ')' at line {current_token['line']}.")
@@ -804,21 +839,39 @@ def Relop():
     if current_token['lexeme'] == '==':
         get_next_token()
         print_token()
+        # gen_instruction(EQU, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '!=':
         get_next_token()
         print_token()
+        # gen_instruction(NEQ, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '>':
         get_next_token()
         print_token()
+        # gen_instruction(GRT, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<':
         get_next_token()
         print_token()
+        # gen_instruction(LES, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<=':
         get_next_token()
         print_token()
+        # gen_instruction(LEQ, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '=>':
         get_next_token()
         print_token()
+        # gen_instruction(GEQ, None)
+        # push_jumpstack(instruction_address) ???
+        # gen_instruction(JUMPZ, None)
     else:
         
         print(f"Error: Expected '==', '!=', '>', '<', '<=' or '=>' at line {current_token['line']}.")
@@ -854,11 +907,13 @@ def ExpressionPrime():
         get_next_token()
         print_token()
         Term()
+        # gen_instruction(ADD, None)
         ExpressionPrime()
     elif current_token['lexeme'] == '-':
         get_next_token()
         print_token()
         Term()
+        # gen_instruction(SUB, None)
         ExpressionPrime()
     else:
         Empty()
@@ -888,11 +943,13 @@ def TermPrime():
         get_next_token()
         print_token()
         Factor()
+        # gen_instruction(MUL, None)
         TermPrime()
     elif current_token['lexeme'] == '/':
         get_next_token()
         print_token()
         Factor()
+        # gen_instruction(DIV, None)
         TermPrime()
     else:
         Empty()
