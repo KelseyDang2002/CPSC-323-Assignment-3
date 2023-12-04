@@ -233,30 +233,31 @@ def Rat23F():
 
 
 # Rule 10
-# R10) <Qualifier> ::= integer | bool | real
+# R10) <Qualifier> ::= integer | bool 
 def Qualifier():
     global current_token, switch, output_file
     # get_next_token()
     # print_token()
     if switch == False:
-        print("\t<Qualifier> ::= integer | bool | real")
+        print("\t<Qualifier> ::= integer | bool")
         with open(output_file, "a") as file:
-            file.write("\t<Qualifier> ::= integer | boolean | real\n")
+            file.write("\t<Qualifier> ::= integer | boolean\n")
     if current_token['lexeme'] == 'integer':
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'bool':
         get_next_token()
         print_token()
-    elif current_token['lexeme'] == 'real':
-        get_next_token()
-        print_token()
+    # removing reals 
+    # elif current_token['lexeme'] == 'real':
+    #     get_next_token()
+    #     print_token()
     else:
         
-        print(f"Error: Expected 'integer', 'bool' or 'real' at line {current_token['line']}.")
+        print(f"Error: Expected 'integer' or 'bool' at line {current_token['line']}.")
         print(f"Reading token:", end="")
         with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'integer', 'bool' or 'real' at line {current_token['line']}.\n")
+            file.write(f"Error: Expected 'integer' or 'bool' at line {current_token['line']}.\n")
             file.write(f"Reading token:")
         print_token()
         exit_syntax_analyzer()
@@ -306,7 +307,8 @@ def DeclarationListPrime():
         print("\t<Declaration List Prime> ::= <Declaration List> | <Empty>")
         with open(output_file, "a") as file:
             file.write("\t<Declaration List Prime> ::= <Declaration List> | <Empty>\n")
-    if current_token['lexeme'] == 'integer' or current_token['lexeme'] == 'bool' or current_token['lexeme'] == 'real':
+    # removing real from here 
+    if current_token['lexeme'] == 'integer' or current_token['lexeme'] == 'bool':
         DeclarationList()
     else:
         Empty()
@@ -972,13 +974,13 @@ def Factor():
 
 
 # Rule 37
-# R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+# R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 def Primary():
     global current_token, switch, output_file
     if switch == False:
-        print("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false")
+        print("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false")
         with open(output_file, "a") as file:
-            file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false\n")
+            file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false\n")
     if current_token['token'] == 'identifier':
         get_next_token()
         print_token()
@@ -1002,9 +1004,10 @@ def Primary():
                 file.write(f"Reading token:")
                 print_token()
             exit_syntax_analyzer()
-    elif current_token['token'] == 'real':
-        get_next_token()
-        print_token()
+    # removing real from here
+    # elif current_token['token'] == 'real':
+    #     get_next_token()
+    #     print_token()
     elif current_token['lexeme'] == 'true':
         get_next_token()
         print_token()
@@ -1013,10 +1016,10 @@ def Primary():
         print_token()
     else:
         
-        print(f"Error: Expected 'identifier', 'integer', '(', 'real', 'true' or 'false' at line {current_token['line']}.")
+        print(f"Error: Expected 'identifier', 'integer', '(', 'true' or 'false' at line {current_token['line']}.")
         print(f"Reading token:", end="")
         with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'identifier', 'integer', '(', 'real', 'true' or 'false' at line {current_token['line']}.\n")
+            file.write(f"Error: Expected 'identifier', 'integer', '(', 'true' or 'false' at line {current_token['line']}.\n")
             file.write(f"Reading token:")
         print_token()
         exit_syntax_analyzer()

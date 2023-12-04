@@ -4,7 +4,7 @@ Token: keyword			Lexeme: integer
 	<Opt Declaration List> ::= <Declaration List> | <Empty>
 	<Declaration List> ::= <Declaration> ; <Declaration List Prime>
 	<Declaration> ::= <Qualifier> <IDs>
-	<Qualifier> ::= integer | boolean | real
+	<Qualifier> ::= integer | boolean
 Token: identifier		Lexeme: i
 	<IDs> ::= <Identifier> <IDs Prime>
 Token: separator		Lexeme: ,
@@ -30,7 +30,7 @@ Token: integer			Lexeme: 0
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: ;
 	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
 	<Empty> ::= <Empty>
@@ -46,7 +46,7 @@ Token: integer			Lexeme: 1
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: ;
 	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
 	<Empty> ::= <Empty>
@@ -75,7 +75,7 @@ Token: identifier		Lexeme: i
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: operator			Lexeme: <
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -88,7 +88,7 @@ Token: identifier		Lexeme: max
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: )
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -108,7 +108,7 @@ Token: identifier		Lexeme: sum
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: operator			Lexeme: +
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -118,7 +118,7 @@ Token: operator			Lexeme: +
 Token: identifier		Lexeme: i
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: ;
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -136,7 +136,7 @@ Token: identifier		Lexeme: i
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: operator			Lexeme: +
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -146,7 +146,7 @@ Token: operator			Lexeme: +
 Token: integer			Lexeme: 1
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: ;
 	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
 	<Empty> ::= <Empty>
@@ -165,7 +165,7 @@ Token: identifier		Lexeme: sum
 	<Expression> ::= <Term> <Expression Prime>
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: operator			Lexeme: +
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
@@ -175,7 +175,7 @@ Token: operator			Lexeme: +
 Token: identifier		Lexeme: max
 	<Term> ::= <Factor> <Term Prime>
 	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 Token: separator		Lexeme: )
 	<Primary Prime> ::= <Empty> | ( <IDs> )
 	<Empty> ::= <Empty>
