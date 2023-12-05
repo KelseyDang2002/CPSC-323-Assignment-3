@@ -195,6 +195,4 @@ Identifier		Memory Location		Type
 max			7001			integer
 Identifier		Memory Location		Type
 sum			7002			integer
-Identifier		Memory Location		Type
-max			7003			integer
 

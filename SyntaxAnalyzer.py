@@ -29,6 +29,7 @@ switch = False
 
 # variables for symbol table and assembly code instructions
 MEMORY_ADDRESS = 7000
+INSTRUCTION_ADDRESS = 1
 # Use this variable to store the type to pass to the insert_symbol_table function
 LAST_IDENTIFIER_TYPE = None
 symbol_table = []
@@ -38,7 +39,7 @@ symbol_table = []
 
 assembly_code = []
 # example of object in assembly code list
-# ['Instruction': 'PUSHI', 'Parameter': 0]
+# ['Address': 1, 'Operation': 'PUSHI', 'Operand': 0]
 
 
 
@@ -106,23 +107,24 @@ def check_symbol_table(identifier):
     return False
 
 
-def insert_symbol_table(identifier, type):
+def insert_symbol_table(identifier):
     """This function is used to insert a new identifier into the symbol table"""
-    global symbol_table, MEMORY_ADDRESS
-    if check_symbol_table(identifier):
-        # perhaps instead of throwing error just update the memory location 
-        print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
-        print(f"Reading token:", end="")
-        with open(output_file, "a") as file:
-            file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
-            file.write(f"Reading token:")
-        print_token()
-        exit_syntax_analyzer()
-    else:
-        symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': type})
+    global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE
+    # if check_symbol_table(identifier['lexeme']):
+    #     # perhaps instead of throwing error just update the memory location 
+    #     print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
+    #     print(f"Reading token:", end="")
+    #     with open(output_file, "a") as file:
+    #         file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
+    #         file.write(f"Reading token:")
+    #     print_token()
+    #     exit_syntax_analyzer()
+    # else:
+    #     symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
+    #     MEMORY_ADDRESS += 1
+    if not check_symbol_table(identifier['lexeme']):
+        symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
         MEMORY_ADDRESS += 1
-        
-
 
 def get_address(identifier):
     """This function is used to get the memory location of an identifier in the symbol table"""
@@ -138,7 +140,7 @@ def get_address(identifier):
 # def push_jumpstack(instruction_address)
 
 
-def gen_instruction(instruction, parameter):
+def gen_instruction(operation, operand):
     """This function is used to generate assembly code instructions"""
     global assembly_code
     # need to handle different instructions 
@@ -164,7 +166,8 @@ def gen_instruction(instruction, parameter):
     # I16) JUMPZ    {Instruction Location} *could be unknown initially*
     # I17) JUMP     {Instruction Location}
     # I18) LABEL    None
-    assembly_code.append({'Instruction': instruction, 'Parameter': parameter})
+    assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': operand})
+    INSTRUCTION_ADDRESS += 1
 
 # *********************************************************************************************************************************
 # ******************************SYMBOL TABLE AND ASSEMBLY CODE ENDS HERE***********************************************************
@@ -336,13 +339,13 @@ def Declaration():
 # Rule 16
 # R16) <IDs> ::= <Identifier> <IDs Prime>
 def IDs():
-    global current_token, switch, output_file, LAST_IDENTIFIER_TYPE
+    global current_token, switch, output_file
     if switch == False:
         print("\t<IDs> ::= <Identifier> <IDs Prime>")
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
-        insert_symbol_table(current_token, LAST_IDENTIFIER_TYPE)
+        insert_symbol_table(current_token)
         get_next_token()
         print_token()
         IDsPrime()
