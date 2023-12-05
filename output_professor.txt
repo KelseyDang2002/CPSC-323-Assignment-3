@@ -188,3 +188,13 @@ Token: separator		Lexeme: #
 
 Reached end of file without parsing errors.
 
+Symbol Table:
+Identifier		Memory Location		Type
+i			7000			integer
+Identifier		Memory Location		Type
+max			7001			integer
+Identifier		Memory Location		Type
+sum			7002			integer
+Identifier		Memory Location		Type
+max			7003			integer
+

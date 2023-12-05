@@ -69,13 +69,13 @@ def print_token():
 def print_symbol_table():
     """This function is used to print all the values in the symbol table"""
     global output_file
-    print("\n\t\t\tSymbol Table:")
+    print("Symbol Table:")
+    print("Identifier\t\tMemory Location\t\tType")
     for i in symbol_table:
-        print("Identifier\t\tMemory Location\t\tType")
         print(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}")
     print("\n")
     with open(output_file, "a") as file:
-        file.write("\n\t\t\tSymbol Table:\n")
+        file.write("Symbol Table:\n")
         for i in symbol_table:
             file.write("Identifier\t\tMemory Location\t\tType\n")
             file.write(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}\n")
@@ -106,9 +106,9 @@ def check_symbol_table(identifier):
     return False
 
 
-def insert_symbol_table(identifier, memory_location, type):
+def insert_symbol_table(identifier, type):
     """This function is used to insert a new identifier into the symbol table"""
-    global symbol_table
+    global symbol_table, MEMORY_ADDRESS
     if check_symbol_table(identifier):
         # perhaps instead of throwing error just update the memory location 
         print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
@@ -119,7 +119,9 @@ def insert_symbol_table(identifier, memory_location, type):
         print_token()
         exit_syntax_analyzer()
     else:
-        symbol_table.append({'Identifier': identifier, 'Memory Location': memory_location, 'Type': type})
+        symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': type})
+        MEMORY_ADDRESS += 1
+        
 
 
 def get_address(identifier):
@@ -235,7 +237,7 @@ def Rat23F():
 # Rule 10
 # R10) <Qualifier> ::= integer | bool 
 def Qualifier():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, LAST_IDENTIFIER_TYPE
     # get_next_token()
     # print_token()
     if switch == False:
@@ -243,9 +245,11 @@ def Qualifier():
         with open(output_file, "a") as file:
             file.write("\t<Qualifier> ::= integer | boolean\n")
     if current_token['lexeme'] == 'integer':
+        LAST_IDENTIFIER_TYPE = 'integer'
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'bool':
+        LAST_IDENTIFIER_TYPE = 'bool'
         get_next_token()
         print_token()
     # removing reals 
@@ -332,12 +336,13 @@ def Declaration():
 # Rule 16
 # R16) <IDs> ::= <Identifier> <IDs Prime>
 def IDs():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, LAST_IDENTIFIER_TYPE
     if switch == False:
         print("\t<IDs> ::= <Identifier> <IDs Prime>")
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
+        insert_symbol_table(current_token, LAST_IDENTIFIER_TYPE)
         get_next_token()
         print_token()
         IDsPrime()
@@ -1332,11 +1337,13 @@ def analyze_file():
                 tokens.clear()  # Clear the list of tokens from previous analyses
                 current_line = 1  # Reset the current line to 1
                 token_index = 0  # Reset the token index to 0
+                LAST_IDENTIFIER_TYPE = None # Reset the last identifier type to None
+                MEMORY_ADDRESS = 7000 # Reset the memory address to 7000
                 read_file(file_name)
                 commentRemoval(words)
                 Rat23F()        # Run the syntax analyzer
                 # TODO: check that this works 
-                # print_symbol_table()
+                print_symbol_table()
                 # print_assembly_code()
                 break
         except FileNotFoundError:
