@@ -1347,10 +1347,13 @@ def analyze_file():
                 switch = False  # Set switch to False to print the rules
                 words.clear()  # Clear the list of words from previous analyses
                 tokens.clear()  # Clear the list of tokens from previous analyses
+                symbol_table.clear()  # Clear the symbol table from previous analyses
+                assembly_code.clear()  # Clear the assembly code from previous analyses
                 current_line = 1  # Reset the current line to 1
                 token_index = 0  # Reset the token index to 0
                 LAST_IDENTIFIER_TYPE = None # Reset the last identifier type to None
                 MEMORY_ADDRESS = 7000 # Reset the memory address to 7000
+                INSTRUCTION_ADDRESS = 1 # Reset the instruction address to 1
                 read_file(file_name)
                 commentRemoval(words)
                 Rat23F()        # Run the syntax analyzer

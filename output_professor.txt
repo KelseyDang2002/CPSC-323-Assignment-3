@@ -225,17 +225,17 @@ Reached end of file without parsing errors.
 
 Symbol Table:
 Identifier		Memory Location		Type
-i			7000			integer
+i			7003			integer
 Identifier		Memory Location		Type
-max			7001			integer
+max			7004			integer
 Identifier		Memory Location		Type
-sum			7002			integer
+sum			7005			integer
 
 
 Assembly Code Listing:
-1			MUL			
-2			ADD			
-3			ADD			
-4			ADD			
-5			ADD			
+6			MUL			
+7			ADD			
+8			ADD			
+9			ADD			
+10			ADD			
 
