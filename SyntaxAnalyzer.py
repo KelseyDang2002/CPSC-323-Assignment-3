@@ -86,16 +86,14 @@ def print_symbol_table():
 def print_assembly_code():
     """This function is used to all the assembly code instructions"""
     global output_file
-    print("\n\t\t\tAssembly Code Listing:")
+    print("\nAssembly Code Listing:")
     for i in assembly_code:
-        print("Instruction\t\tParameter")
-        print(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}")
+        print(f"{i['Address']}\t\t\t{i['Operation']}\t\t\t{i['Operand']}")
     print("\n")
     with open(output_file, "a") as file:
-        file.write("\n\t\t\tAssembly Code Listing:\n")
+        file.write("\nAssembly Code Listing:\n")
         for i in assembly_code:
-            file.write("Instruction\t\tParameter\n")
-            file.write(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}\n")
+            file.write(f"{i['Address']}\t\t\t{i['Operation']}\t\t\t{i['Operand']}\n")
         file.write("\n")
 
 
@@ -140,12 +138,12 @@ def get_address(identifier):
 # def push_jumpstack(instruction_address)
 
 
-def gen_instruction(operation, operand):
+def gen_instruction(operation, operand = None):
     """This function is used to generate assembly code instructions"""
-    global assembly_code
+    global assembly_code, INSTRUCTION_ADDRESS
     # need to handle different instructions 
     # if instruction == 'PUSHI': for example
-    #
+    # 
     # Operator      Operand
     # ____________________________________
     # I1) PUSHI     {Integer Value}
@@ -166,8 +164,12 @@ def gen_instruction(operation, operand):
     # I16) JUMPZ    {Instruction Location} *could be unknown initially*
     # I17) JUMP     {Instruction Location}
     # I18) LABEL    None
-    assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': operand})
-    INSTRUCTION_ADDRESS += 1
+    if operand == None:
+        assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': ""})
+        INSTRUCTION_ADDRESS += 1
+    else:
+        assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': operand})
+        INSTRUCTION_ADDRESS += 1
 
 # *********************************************************************************************************************************
 # ******************************SYMBOL TABLE AND ASSEMBLY CODE ENDS HERE***********************************************************
@@ -482,6 +484,9 @@ def Assign():
             file.write("\t<Assign> ::= <Identifier> = <Expression> ;\n")
     if current_token['token'] == 'identifier':
         # insert_symbol_table(idenifier, memory_address, type)
+        # save the identifier for later use
+        # TODO: generate instruction here 
+        save = current_token['lexeme']
         get_next_token()
         print_token()
         if current_token['lexeme'] == '=':
@@ -917,13 +922,15 @@ def ExpressionPrime():
         get_next_token()
         print_token()
         Term()
-        # gen_instruction(ADD, None)
+        # TODO: test if this is working
+        gen_instruction("ADD", None)
         ExpressionPrime()
     elif current_token['lexeme'] == '-':
         get_next_token()
         print_token()
         Term()
-        # gen_instruction(SUB, None)
+        # TODO: test if this is working 
+        gen_instruction("SUB", None)
         ExpressionPrime()
     else:
         Empty()
@@ -953,19 +960,21 @@ def TermPrime():
         get_next_token()
         print_token()
         Factor()
-        # gen_instruction(MUL, None)
+        # TODO: test this 
+        gen_instruction("MUL", None)
         TermPrime()
     elif current_token['lexeme'] == '/':
         get_next_token()
         print_token()
         Factor()
-        # gen_instruction(DIV, None)
+        # TODO: test this 
+        gen_instruction("DIV", None)
         TermPrime()
     else:
         Empty()
 
 
-# Rule 36
+# Rule 36 
 # R36) <Factor> ::= - <Primary> | <Primary>
 def Factor():
     global current_token, switch, output_file
@@ -1347,7 +1356,8 @@ def analyze_file():
                 Rat23F()        # Run the syntax analyzer
                 # TODO: check that this works 
                 print_symbol_table()
-                # print_assembly_code()
+                # TODO: check assembly table works 
+                print_assembly_code()
                 break
         except FileNotFoundError:
             print(f"The file '{file_name}' was not found. Please enter a valid file name.")
@@ -1374,6 +1384,7 @@ def main():
             analyze_file()
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
+    # perhaps ask the user if they want to print syntax rules 
 
 
 if __name__ == "__main__":
