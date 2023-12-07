@@ -198,16 +198,27 @@ sum			7002			integer
 
 
 Assembly Code Listing:
-1			PUSHI			0
-2			POPM			7002
-3			PUSHI			1
-4			POPM			7000
-5			STDIN			
-6			ADD			
-7			POPM			7002
-8			PUSHI			1
-9			ADD			
-10			POPM			7000
-11			ADD			
-12			STDOUT			
+1			PUSHM			
+2			PUSHI			0
+3			POPM			7002
+4			PUSHM			
+5			PUSHI			1
+6			POPM			7000
+7			STDIN			
+8			POPM			7001
+9			PUSHM			7000
+10			PUSHM			7001
+11			PUSHM			7002
+12			PUSHM			7000
+13			ADD			
+14			POPM			7002
+15			PUSHM			7000
+16			PUSHM			
+17			PUSHI			1
+18			ADD			
+19			POPM			7000
+20			PUSHM			7002
+21			PUSHM			7001
+22			ADD			
+23			STDOUT			
 

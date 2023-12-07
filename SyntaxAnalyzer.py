@@ -354,6 +354,9 @@ def IDs():
         address = get_address(current_token['lexeme'])
         if address == None:
             insert_symbol_table(current_token)
+        else:
+            # TODO: TEST IF THIS WORKS 
+            gen_instruction("POPM", get_address(current_token['lexeme']))
             
         get_next_token()
         print_token()
@@ -735,11 +738,15 @@ def Scan():
         with open(output_file, "a") as file:
             file.write("\t<Scan> ::= get ( <IDs> );\n")
     if current_token['lexeme'] == 'get':
+        gen_instruction("STDIN", None)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '(':
             get_next_token()
             print_token()
+            # TODO: fix this part in ids 
+            # gen_instruction("POPM", get_address(current_token['lexeme']))
+            # LAST_INSTRUCTION = "POPM"
             IDs()
             if current_token['lexeme'] == ')':
                 get_next_token()
@@ -747,7 +754,6 @@ def Scan():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
-                    gen_instruction("STDIN", None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -992,8 +998,11 @@ def Factor():
     if current_token['lexeme'] == '-':
         get_next_token()
         print_token()
+        # TODO: TEST IF THIS WORKS 
+        gen_instruction("PUSHM", get_address(current_token['lexeme']) * -1)
         Primary()
     else:
+        gen_instruction("PUSHM", get_address(current_token['lexeme']))
         Primary()
 
 
