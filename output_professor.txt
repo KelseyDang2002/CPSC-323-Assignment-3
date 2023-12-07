@@ -18,45 +18,10 @@ Token: identifier		Lexeme: sum
 Token: separator		Lexeme: ;
 	<IDs Prime> ::= , <IDs> | <Empty>
 	<Empty> ::= <Empty>
-Token: identifier		Lexeme: x
+Token: identifier		Lexeme: sum
 	<Declaration List Prime> ::= <Declaration List> | <Empty>
 	<Empty> ::= <Empty>
 	<Empty> ::= <Empty>
-	<Statement List> ::= <Statement> <Statement List Prime>
-	<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
-	<Assign> ::= <Identifier> = <Expression> ;
-Token: operator			Lexeme: =
-Token: identifier		Lexeme: a
-	<Expression> ::= <Term> <Expression Prime>
-	<Term> ::= <Factor> <Term Prime>
-	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
-Token: operator			Lexeme: +
-	<Primary Prime> ::= <Empty> | ( <IDs> )
-	<Empty> ::= <Empty>
-	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
-	<Empty> ::= <Empty>
-	<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>
-Token: identifier		Lexeme: b
-	<Term> ::= <Factor> <Term Prime>
-	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
-Token: operator			Lexeme: *
-	<Primary Prime> ::= <Empty> | ( <IDs> )
-	<Empty> ::= <Empty>
-	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
-Token: identifier		Lexeme: c
-	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
-Token: separator		Lexeme: ;
-	<Primary Prime> ::= <Empty> | ( <IDs> )
-	<Empty> ::= <Empty>
-	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
-	<Empty> ::= <Empty>
-	<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>
-	<Empty> ::= <Empty>
-Token: identifier		Lexeme: sum
-	<Statement List Prime> ::= <Statement List> | <Empty>
 	<Statement List> ::= <Statement> <Statement List Prime>
 	<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
 	<Assign> ::= <Identifier> = <Expression> ;
@@ -225,17 +190,24 @@ Reached end of file without parsing errors.
 
 Symbol Table:
 Identifier		Memory Location		Type
-i			7003			integer
+i			7000			integer
 Identifier		Memory Location		Type
-max			7004			integer
+max			7001			integer
 Identifier		Memory Location		Type
-sum			7005			integer
+sum			7002			integer
 
 
 Assembly Code Listing:
-6			MUL			
-7			ADD			
-8			ADD			
+1			PUSHI			0
+2			POPM			7002
+3			PUSHI			1
+4			POPM			7000
+5			STDIN			
+6			ADD			
+7			POPM			7002
+8			PUSHI			1
 9			ADD			
-10			ADD			
+10			POPM			7000
+11			ADD			
+12			STDOUT			
 

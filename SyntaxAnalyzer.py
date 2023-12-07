@@ -41,6 +41,9 @@ assembly_code = []
 # example of object in assembly code list
 # ['Address': 1, 'Operation': 'PUSHI', 'Operand': 0]
 
+# TODO: do this 
+# make variable for specific instruction for pushm and popm 
+
 
 
 # *********************************************************************************************************************************
@@ -347,7 +350,11 @@ def IDs():
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
-        insert_symbol_table(current_token)
+        # TODO: make logic to either insert into symbol table or check if it exists
+        address = get_address(current_token['lexeme'])
+        if address == None:
+            insert_symbol_table(current_token)
+            
         get_next_token()
         print_token()
         IDsPrime()
@@ -493,7 +500,7 @@ def Assign():
             get_next_token()
             print_token()
             Expression()
-            # gen_instruction(POPM, MEMORY_ADDRESS)
+            gen_instruction("POPM", get_address(save))
             if current_token['lexeme'] == ';':
                 get_next_token()
                 print_token()
@@ -681,7 +688,7 @@ def Print_put():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
-                    # gen_instruction(STDOUT, None)
+                    gen_instruction("STDOUT", None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -740,7 +747,7 @@ def Scan():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
-                    # gen_instruction(STDIN, None)
+                    gen_instruction("STDIN", None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -866,7 +873,7 @@ def Relop():
     elif current_token['lexeme'] == '>':
         get_next_token()
         print_token()
-        # gen_instruction(GRT, None)
+        # gen_instruction("GRT", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<':
@@ -1003,6 +1010,8 @@ def Primary():
         print_token()
         PrimaryPrime()
     elif current_token['token'] == 'integer':
+        # TODO: test that pushi is working
+        gen_instruction("PUSHI", current_token['lexeme'])
         get_next_token()
         print_token()
     elif current_token['lexeme'] == '(':
@@ -1026,9 +1035,11 @@ def Primary():
     #     get_next_token()
     #     print_token()
     elif current_token['lexeme'] == 'true':
+        gen_instruction("PUSHI", 1)
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'false':
+        gen_instruction("PUSHI", 0)
         get_next_token()
         print_token()
     else:
@@ -1327,7 +1338,7 @@ def write_tokens(tokens):
 
 # Function to analyze a file
 def analyze_file():
-    global current_line, output_file, switch, token_index
+    global current_line, output_file, switch, token_index, LAST_IDENTIFIER_TYPE, MEMORY_ADDRESS, INSTRUCTION_ADDRESS
     while True:
         try:
             file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ")
