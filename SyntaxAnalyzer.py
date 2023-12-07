@@ -594,13 +594,17 @@ def IfPrime():
         with open(output_file, "a") as file:
             file.write("\t<If Prime> ::= endif | else <Statement> endif\n")
     if current_token['lexeme'] == 'endif':
+        # TODO: might need to remove label from here 
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'else':
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
         Statement()
         if current_token['lexeme'] == 'endif':
+            gen_instruction("LABEL", None)
             get_next_token()
             print_token()
         else:
@@ -801,7 +805,9 @@ def While():
             file.write("\t<While> ::= while ( <Condition> ) <Statement>\n")
     if current_token['lexeme'] == 'while':
         # get_address(identifier)
-        # gen_instruction(LABEL, None)
+        # TODO: test if this instruction address works 
+        address = INSTRUCTION_ADDRESS
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '(':
@@ -812,7 +818,7 @@ def While():
                 get_next_token()
                 print_token()
                 Statement()
-                # gen_instruction(JUMP, instruction_location)
+                gen_instruction("JUMP", address)
                 # back_patch(instruction_address) ???
             else:
                 
@@ -867,37 +873,38 @@ def Relop():
     if current_token['lexeme'] == '==':
         get_next_token()
         print_token()
-        # gen_instruction(EQU, None)
+        gen_instruction("EQU", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '!=':
         get_next_token()
         print_token()
-        # gen_instruction(NEQ, None)
+        gen_instruction("NEQ", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '>':
         get_next_token()
         print_token()
-        # gen_instruction("GRT", None)
+        gen_instruction("GRT", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<':
         get_next_token()
         print_token()
-        # gen_instruction(LES, None)
+        gen_instruction("LES", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<=':
         get_next_token()
         print_token()
-        # gen_instruction(LEQ, None)
+        gen_instruction("LEQ", None)
+        # TODO: handle the two next functions 
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '=>':
         get_next_token()
         print_token()
-        # gen_instruction(GEQ, None)
+        gen_instruction("GEQ", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     else:
@@ -999,10 +1006,11 @@ def Factor():
         get_next_token()
         print_token()
         # TODO: TEST IF THIS WORKS 
-        gen_instruction("PUSHM", get_address(current_token['lexeme']) * -1)
+        # TODO: tjos os [romtomg immecessary push m
+        # gen_instruction("PUSHM", get_address(current_token['lexeme']) * -1)
         Primary()
     else:
-        gen_instruction("PUSHM", get_address(current_token['lexeme']))
+        # gen_instruction("PUSHM", get_address(current_token['lexeme']))
         Primary()
 
 
@@ -1015,6 +1023,8 @@ def Primary():
         with open(output_file, "a") as file:
             file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false\n")
     if current_token['token'] == 'identifier':
+        # TODO: test if this works
+        gen_instruction("PUSHM", get_address(current_token['lexeme']))
         get_next_token()
         print_token()
         PrimaryPrime()
