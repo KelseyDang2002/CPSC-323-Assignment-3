@@ -29,6 +29,7 @@ switch = False
 
 # variables for symbol table and assembly code instructions
 MEMORY_ADDRESS = 7000
+INSTRUCTION_ADDRESS = 1
 # Use this variable to store the type to pass to the insert_symbol_table function
 LAST_IDENTIFIER_TYPE = None
 symbol_table = []
@@ -38,7 +39,10 @@ symbol_table = []
 
 assembly_code = []
 # example of object in assembly code list
-# ['Instruction': 'PUSHI', 'Parameter': 0]
+# ['Address': 1, 'Operation': 'PUSHI', 'Operand': 0]
+
+# TODO: do this 
+# make variable for specific instruction for pushm and popm 
 
 
 
@@ -69,13 +73,13 @@ def print_token():
 def print_symbol_table():
     """This function is used to print all the values in the symbol table"""
     global output_file
-    print("\n\t\t\tSymbol Table:")
+    print("Symbol Table:")
+    print("Identifier\t\tMemory Location\t\tType")
     for i in symbol_table:
-        print("Identifier\t\tMemory Location\t\tType")
         print(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}")
     print("\n")
     with open(output_file, "a") as file:
-        file.write("\n\t\t\tSymbol Table:\n")
+        file.write("Symbol Table:\n")
         for i in symbol_table:
             file.write("Identifier\t\tMemory Location\t\tType\n")
             file.write(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}\n")
@@ -85,16 +89,14 @@ def print_symbol_table():
 def print_assembly_code():
     """This function is used to all the assembly code instructions"""
     global output_file
-    print("\n\t\t\tAssembly Code Listing:")
+    print("\nAssembly Code Listing:")
     for i in assembly_code:
-        print("Instruction\t\tParameter")
-        print(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}")
+        print(f"{i['Address']}\t\t\t{i['Operation']}\t\t\t{i['Operand']}")
     print("\n")
     with open(output_file, "a") as file:
-        file.write("\n\t\t\tAssembly Code Listing:\n")
+        file.write("\nAssembly Code Listing:\n")
         for i in assembly_code:
-            file.write("Instruction\t\tParameter\n")
-            file.write(f"{i}\t\t\t{i['Instruction']}\t\t\t{i['Parameter']}\n")
+            file.write(f"{i['Address']}\t\t\t{i['Operation']}\t\t\t{i['Operand']}\n")
         file.write("\n")
 
 
@@ -106,21 +108,24 @@ def check_symbol_table(identifier):
     return False
 
 
-def insert_symbol_table(identifier, memory_location, type):
+def insert_symbol_table(identifier):
     """This function is used to insert a new identifier into the symbol table"""
-    global symbol_table
-    if check_symbol_table(identifier):
-        # perhaps instead of throwing error just update the memory location 
-        print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
-        print(f"Reading token:", end="")
-        with open(output_file, "a") as file:
-            file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
-            file.write(f"Reading token:")
-        print_token()
-        exit_syntax_analyzer()
-    else:
-        symbol_table.append({'Identifier': identifier, 'Memory Location': memory_location, 'Type': type})
-
+    global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE
+    # if check_symbol_table(identifier['lexeme']):
+    #     # perhaps instead of throwing error just update the memory location 
+    #     print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
+    #     print(f"Reading token:", end="")
+    #     with open(output_file, "a") as file:
+    #         file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
+    #         file.write(f"Reading token:")
+    #     print_token()
+    #     exit_syntax_analyzer()
+    # else:
+    #     symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
+    #     MEMORY_ADDRESS += 1
+    if not check_symbol_table(identifier['lexeme']):
+        symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
+        MEMORY_ADDRESS += 1
 
 def get_address(identifier):
     """This function is used to get the memory location of an identifier in the symbol table"""
@@ -136,12 +141,12 @@ def get_address(identifier):
 # def push_jumpstack(instruction_address)
 
 
-def gen_instruction(instruction, parameter):
+def gen_instruction(operation, operand = None):
     """This function is used to generate assembly code instructions"""
-    global assembly_code
+    global assembly_code, INSTRUCTION_ADDRESS
     # need to handle different instructions 
     # if instruction == 'PUSHI': for example
-    #
+    # 
     # Operator      Operand
     # ____________________________________
     # I1) PUSHI     {Integer Value}
@@ -162,7 +167,12 @@ def gen_instruction(instruction, parameter):
     # I16) JUMPZ    {Instruction Location} *could be unknown initially*
     # I17) JUMP     {Instruction Location}
     # I18) LABEL    None
-    assembly_code.append({'Instruction': instruction, 'Parameter': parameter})
+    if operand == None:
+        assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': ""})
+        INSTRUCTION_ADDRESS += 1
+    else:
+        assembly_code.append({'Address': INSTRUCTION_ADDRESS, 'Operation': operation, 'Operand': operand})
+        INSTRUCTION_ADDRESS += 1
 
 # *********************************************************************************************************************************
 # ******************************SYMBOL TABLE AND ASSEMBLY CODE ENDS HERE***********************************************************
@@ -233,30 +243,33 @@ def Rat23F():
 
 
 # Rule 10
-# R10) <Qualifier> ::= integer | bool | real
+# R10) <Qualifier> ::= integer | bool 
 def Qualifier():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, LAST_IDENTIFIER_TYPE
     # get_next_token()
     # print_token()
     if switch == False:
-        print("\t<Qualifier> ::= integer | bool | real")
+        print("\t<Qualifier> ::= integer | bool")
         with open(output_file, "a") as file:
-            file.write("\t<Qualifier> ::= integer | boolean | real\n")
+            file.write("\t<Qualifier> ::= integer | boolean\n")
     if current_token['lexeme'] == 'integer':
+        LAST_IDENTIFIER_TYPE = 'integer'
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'bool':
+        LAST_IDENTIFIER_TYPE = 'bool'
         get_next_token()
         print_token()
-    elif current_token['lexeme'] == 'real':
-        get_next_token()
-        print_token()
+    # removing reals 
+    # elif current_token['lexeme'] == 'real':
+    #     get_next_token()
+    #     print_token()
     else:
         
-        print(f"Error: Expected 'integer', 'bool' or 'real' at line {current_token['line']}.")
+        print(f"Error: Expected 'integer' or 'bool' at line {current_token['line']}.")
         print(f"Reading token:", end="")
         with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'integer', 'bool' or 'real' at line {current_token['line']}.\n")
+            file.write(f"Error: Expected 'integer' or 'bool' at line {current_token['line']}.\n")
             file.write(f"Reading token:")
         print_token()
         exit_syntax_analyzer()
@@ -306,7 +319,8 @@ def DeclarationListPrime():
         print("\t<Declaration List Prime> ::= <Declaration List> | <Empty>")
         with open(output_file, "a") as file:
             file.write("\t<Declaration List Prime> ::= <Declaration List> | <Empty>\n")
-    if current_token['lexeme'] == 'integer' or current_token['lexeme'] == 'bool' or current_token['lexeme'] == 'real':
+    # removing real from here 
+    if current_token['lexeme'] == 'integer' or current_token['lexeme'] == 'bool':
         DeclarationList()
     else:
         Empty()
@@ -336,6 +350,14 @@ def IDs():
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
+        # TODO: make logic to either insert into symbol table or check if it exists
+        address = get_address(current_token['lexeme'])
+        if address == None:
+            insert_symbol_table(current_token)
+        else:
+            # TODO: TEST IF THIS WORKS 
+            gen_instruction("POPM", get_address(current_token['lexeme']))
+            
         get_next_token()
         print_token()
         IDsPrime()
@@ -472,13 +494,16 @@ def Assign():
             file.write("\t<Assign> ::= <Identifier> = <Expression> ;\n")
     if current_token['token'] == 'identifier':
         # insert_symbol_table(idenifier, memory_address, type)
+        # save the identifier for later use
+        # TODO: generate instruction here 
+        save = current_token['lexeme']
         get_next_token()
         print_token()
         if current_token['lexeme'] == '=':
             get_next_token()
             print_token()
             Expression()
-            # gen_instruction(POPM, MEMORY_ADDRESS)
+            gen_instruction("POPM", get_address(save))
             if current_token['lexeme'] == ';':
                 get_next_token()
                 print_token()
@@ -569,13 +594,17 @@ def IfPrime():
         with open(output_file, "a") as file:
             file.write("\t<If Prime> ::= endif | else <Statement> endif\n")
     if current_token['lexeme'] == 'endif':
+        # TODO: might need to remove label from here 
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'else':
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
         Statement()
         if current_token['lexeme'] == 'endif':
+            gen_instruction("LABEL", None)
             get_next_token()
             print_token()
         else:
@@ -666,7 +695,7 @@ def Print_put():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
-                    # gen_instruction(STDOUT, None)
+                    gen_instruction("STDOUT", None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -713,11 +742,15 @@ def Scan():
         with open(output_file, "a") as file:
             file.write("\t<Scan> ::= get ( <IDs> );\n")
     if current_token['lexeme'] == 'get':
+        gen_instruction("STDIN", None)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '(':
             get_next_token()
             print_token()
+            # TODO: fix this part in ids 
+            # gen_instruction("POPM", get_address(current_token['lexeme']))
+            # LAST_INSTRUCTION = "POPM"
             IDs()
             if current_token['lexeme'] == ')':
                 get_next_token()
@@ -725,7 +758,6 @@ def Scan():
                 if current_token['lexeme'] == ';':
                     get_next_token()
                     print_token()
-                    # gen_instruction(STDIN, None)
                 else:
                     
                     print(f"Error: Expected ';' at line {current_token['line']}.")
@@ -773,7 +805,9 @@ def While():
             file.write("\t<While> ::= while ( <Condition> ) <Statement>\n")
     if current_token['lexeme'] == 'while':
         # get_address(identifier)
-        # gen_instruction(LABEL, None)
+        # TODO: test if this instruction address works 
+        address = INSTRUCTION_ADDRESS
+        gen_instruction("LABEL", None)
         get_next_token()
         print_token()
         if current_token['lexeme'] == '(':
@@ -784,7 +818,7 @@ def While():
                 get_next_token()
                 print_token()
                 Statement()
-                # gen_instruction(JUMP, instruction_location)
+                gen_instruction("JUMP", address)
                 # back_patch(instruction_address) ???
             else:
                 
@@ -839,37 +873,38 @@ def Relop():
     if current_token['lexeme'] == '==':
         get_next_token()
         print_token()
-        # gen_instruction(EQU, None)
+        gen_instruction("EQU", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '!=':
         get_next_token()
         print_token()
-        # gen_instruction(NEQ, None)
+        gen_instruction("NEQ", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '>':
         get_next_token()
         print_token()
-        # gen_instruction(GRT, None)
+        gen_instruction("GRT", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<':
         get_next_token()
         print_token()
-        # gen_instruction(LES, None)
+        gen_instruction("LES", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '<=':
         get_next_token()
         print_token()
-        # gen_instruction(LEQ, None)
+        gen_instruction("LEQ", None)
+        # TODO: handle the two next functions 
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     elif current_token['lexeme'] == '=>':
         get_next_token()
         print_token()
-        # gen_instruction(GEQ, None)
+        gen_instruction("GEQ", None)
         # push_jumpstack(instruction_address) ???
         # gen_instruction(JUMPZ, None)
     else:
@@ -907,13 +942,15 @@ def ExpressionPrime():
         get_next_token()
         print_token()
         Term()
-        # gen_instruction(ADD, None)
+        # TODO: test if this is working
+        gen_instruction("ADD", None)
         ExpressionPrime()
     elif current_token['lexeme'] == '-':
         get_next_token()
         print_token()
         Term()
-        # gen_instruction(SUB, None)
+        # TODO: test if this is working 
+        gen_instruction("SUB", None)
         ExpressionPrime()
     else:
         Empty()
@@ -943,19 +980,21 @@ def TermPrime():
         get_next_token()
         print_token()
         Factor()
-        # gen_instruction(MUL, None)
+        # TODO: test this 
+        gen_instruction("MUL", None)
         TermPrime()
     elif current_token['lexeme'] == '/':
         get_next_token()
         print_token()
         Factor()
-        # gen_instruction(DIV, None)
+        # TODO: test this 
+        gen_instruction("DIV", None)
         TermPrime()
     else:
         Empty()
 
 
-# Rule 36
+# Rule 36 
 # R36) <Factor> ::= - <Primary> | <Primary>
 def Factor():
     global current_token, switch, output_file
@@ -966,24 +1005,32 @@ def Factor():
     if current_token['lexeme'] == '-':
         get_next_token()
         print_token()
+        # TODO: TEST IF THIS WORKS 
+        # TODO: tjos os [romtomg immecessary push m
+        # gen_instruction("PUSHM", get_address(current_token['lexeme']) * -1)
         Primary()
     else:
+        # gen_instruction("PUSHM", get_address(current_token['lexeme']))
         Primary()
 
 
 # Rule 37
-# R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+# R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 def Primary():
     global current_token, switch, output_file
     if switch == False:
-        print("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false")
+        print("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false")
         with open(output_file, "a") as file:
-            file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false\n")
+            file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false\n")
     if current_token['token'] == 'identifier':
+        # TODO: test if this works
+        gen_instruction("PUSHM", get_address(current_token['lexeme']))
         get_next_token()
         print_token()
         PrimaryPrime()
     elif current_token['token'] == 'integer':
+        # TODO: test that pushi is working
+        gen_instruction("PUSHI", current_token['lexeme'])
         get_next_token()
         print_token()
     elif current_token['lexeme'] == '(':
@@ -1002,21 +1049,24 @@ def Primary():
                 file.write(f"Reading token:")
                 print_token()
             exit_syntax_analyzer()
-    elif current_token['token'] == 'real':
-        get_next_token()
-        print_token()
+    # removing real from here
+    # elif current_token['token'] == 'real':
+    #     get_next_token()
+    #     print_token()
     elif current_token['lexeme'] == 'true':
+        gen_instruction("PUSHI", 1)
         get_next_token()
         print_token()
     elif current_token['lexeme'] == 'false':
+        gen_instruction("PUSHI", 0)
         get_next_token()
         print_token()
     else:
         
-        print(f"Error: Expected 'identifier', 'integer', '(', 'real', 'true' or 'false' at line {current_token['line']}.")
+        print(f"Error: Expected 'identifier', 'integer', '(', 'true' or 'false' at line {current_token['line']}.")
         print(f"Reading token:", end="")
         with open(output_file, "a") as file:
-            file.write(f"Error: Expected 'identifier', 'integer', '(', 'real', 'true' or 'false' at line {current_token['line']}.\n")
+            file.write(f"Error: Expected 'identifier', 'integer', '(', 'true' or 'false' at line {current_token['line']}.\n")
             file.write(f"Reading token:")
         print_token()
         exit_syntax_analyzer()
@@ -1307,7 +1357,7 @@ def write_tokens(tokens):
 
 # Function to analyze a file
 def analyze_file():
-    global current_line, output_file, switch, token_index
+    global current_line, output_file, switch, token_index, LAST_IDENTIFIER_TYPE, MEMORY_ADDRESS, INSTRUCTION_ADDRESS
     while True:
         try:
             file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ")
@@ -1327,14 +1377,20 @@ def analyze_file():
                 switch = False  # Set switch to False to print the rules
                 words.clear()  # Clear the list of words from previous analyses
                 tokens.clear()  # Clear the list of tokens from previous analyses
+                symbol_table.clear()  # Clear the symbol table from previous analyses
+                assembly_code.clear()  # Clear the assembly code from previous analyses
                 current_line = 1  # Reset the current line to 1
                 token_index = 0  # Reset the token index to 0
+                LAST_IDENTIFIER_TYPE = None # Reset the last identifier type to None
+                MEMORY_ADDRESS = 7000 # Reset the memory address to 7000
+                INSTRUCTION_ADDRESS = 1 # Reset the instruction address to 1
                 read_file(file_name)
                 commentRemoval(words)
                 Rat23F()        # Run the syntax analyzer
                 # TODO: check that this works 
-                # print_symbol_table()
-                # print_assembly_code()
+                print_symbol_table()
+                # TODO: check assembly table works 
+                print_assembly_code()
                 break
         except FileNotFoundError:
             print(f"The file '{file_name}' was not found. Please enter a valid file name.")
@@ -1361,6 +1417,7 @@ def main():
             analyze_file()
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
+    # perhaps ask the user if they want to print syntax rules 
 
 
 if __name__ == "__main__":
