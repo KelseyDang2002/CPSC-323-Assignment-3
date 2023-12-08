@@ -819,6 +819,7 @@ def While():
                 print_token()
                 Statement()
                 gen_instruction("JUMP", address)
+                # TODO: do back_patch
                 # back_patch(instruction_address) ???
             else:
                 
@@ -858,8 +859,34 @@ def Condition():
         with open(output_file, "a") as file:
             file.write("\t<Condition> ::= <Expression> <Relop> <Expression>\n")
     Expression()
+    operand = current_token['lexeme']
     Relop()
     Expression()
+    # handle instructions here 
+    if operand == '==':
+        gen_instruction("EQU", None)
+        # push_jumpstack(instruction_address) ??? 
+        gen_instruction("JUMPZ", None)
+    elif operand == '!=':
+        gen_instruction("NEQ", None)
+        # push_jumpstack(instruction_address) ??? 
+        gen_instruction("JUMPZ", None)
+    elif operand == '>':
+        gen_instruction("GRT", None)
+        # push_jumpstack(instruction_address) ??? 
+        gen_instruction("JUMPZ", None)
+    elif operand == '<':
+        gen_instruction("LES", None)
+        # push_jumpstack(instruction_address) ??? 
+        gen_instruction("JUMPZ", None)
+    elif operand == '<=':
+        gen_instruction("LEQ", None)
+        # push_jumpstack(instruction_address) ???
+        gen_instruction("JUMPZ", None)
+    elif operand == '=>':
+        gen_instruction("GEQ", None)
+        # push_jumpstack(instruction_address) ??? 
+        gen_instruction("JUMPZ", None)
 
 
 # Rule 31
@@ -870,43 +897,10 @@ def Relop():
         print("\t<Relop> ::= == | != | > | < | <= | =>")
         with open(output_file, "a") as file:
             file.write("\t<Relop> ::= == | != | > | < | <= | =>\n")
-    if current_token['lexeme'] == '==':
+    if current_token['lexeme'] in ['==', '!=', '>', '<', '<=', '=>']:
         get_next_token()
         print_token()
-        gen_instruction("EQU", None)
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
-    elif current_token['lexeme'] == '!=':
-        get_next_token()
-        print_token()
-        gen_instruction("NEQ", None)
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
-    elif current_token['lexeme'] == '>':
-        get_next_token()
-        print_token()
-        gen_instruction("GRT", None)
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
-    elif current_token['lexeme'] == '<':
-        get_next_token()
-        print_token()
-        gen_instruction("LES", None)
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
-    elif current_token['lexeme'] == '<=':
-        get_next_token()
-        print_token()
-        gen_instruction("LEQ", None)
-        # TODO: handle the two next functions 
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
-    elif current_token['lexeme'] == '=>':
-        get_next_token()
-        print_token()
-        gen_instruction("GEQ", None)
-        # push_jumpstack(instruction_address) ???
-        # gen_instruction(JUMPZ, None)
+    
     else:
         
         print(f"Error: Expected '==', '!=', '>', '<', '<=' or '=>' at line {current_token['line']}.")

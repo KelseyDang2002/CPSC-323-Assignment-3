@@ -206,19 +206,20 @@ Assembly Code Listing:
 6			POPM			7001
 7			LABEL			
 8			PUSHM			7000
-9			LES			
-10			PUSHM			7001
-11			PUSHM			7002
-12			PUSHM			7000
-13			ADD			
-14			POPM			7002
-15			PUSHM			7000
-16			PUSHI			1
-17			ADD			
-18			POPM			7000
-19			JUMP			7
-20			PUSHM			7002
-21			PUSHM			7001
-22			ADD			
-23			STDOUT			
+9			PUSHM			7001
+10			LES			
+11			JUMPZ			
+12			PUSHM			7002
+13			PUSHM			7000
+14			ADD			
+15			POPM			7002
+16			PUSHM			7000
+17			PUSHI			1
+18			ADD			
+19			POPM			7000
+20			JUMP			7
+21			PUSHM			7002
+22			PUSHM			7001
+23			ADD			
+24			STDOUT			
 
