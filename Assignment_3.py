@@ -30,13 +30,16 @@ switch = False
 # variables for symbol table and assembly code instructions
 MEMORY_ADDRESS = 7000
 INSTRUCTION_ADDRESS = 1
+
 # Use this variable to store the type to pass to the insert_symbol_table function
 LAST_IDENTIFIER_TYPE = None
+
+# define dictionary for symbol table
 symbol_table = []
 # example of object in symbol table 
 # ['Identifier': 'x', 'Memory Location': 7000, 'Type': 'integer']
 
-
+# define dictionary for assembly code instructions
 assembly_code = []
 # example of object in assembly code list
 # ['Address': 1, 'Operation': 'PUSHI', 'Operand': 0]
@@ -111,18 +114,6 @@ def check_symbol_table(identifier):
 def insert_symbol_table(identifier):
     """This function is used to insert a new identifier into the symbol table"""
     global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE
-    # if check_symbol_table(identifier['lexeme']):
-    #     # perhaps instead of throwing error just update the memory location 
-    #     print(f"Error: Identifier '{identifier}' already exists in the symbol table.")
-    #     print(f"Reading token:", end="")
-    #     with open(output_file, "a") as file:
-    #         file.write(f"Error: Identifier '{identifier}' already exists in the symbol table.\n")
-    #         file.write(f"Reading token:")
-    #     print_token()
-    #     exit_syntax_analyzer()
-    # else:
-    #     symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
-    #     MEMORY_ADDRESS += 1
     if not check_symbol_table(identifier['lexeme']):
         symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
         MEMORY_ADDRESS += 1
@@ -205,9 +196,6 @@ def get_next_token():
         with open(output_file, "a") as file:
             file.write("\nReached end of file without parsing errors.\n\n")
         switch = True
-        # change_switch()
-        # exit_syntax_analyzer()
-    
 
 
 # Rule 1
@@ -252,8 +240,6 @@ def Rat23F():
 # R10) <Qualifier> ::= integer | bool 
 def Qualifier():
     global current_token, switch, output_file, LAST_IDENTIFIER_TYPE
-    # get_next_token()
-    # print_token()
     if switch == False:
         print("\t<Qualifier> ::= integer | bool")
         with open(output_file, "a") as file:
@@ -356,12 +342,11 @@ def IDs():
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
-        # TODO: make logic to either insert into symbol table or check if it exists
+        # add identifier to symbol table
         address = get_address(current_token['lexeme'])
         if address == None:
             insert_symbol_table(current_token)
         else:
-            # TODO: TEST IF THIS WORKS 
             gen_instruction("POPM", get_address(current_token['lexeme']))
             
         get_next_token()
@@ -403,7 +388,7 @@ def StatementList():
         with open(output_file, "a") as file:
             file.write("\t<Statement List> ::= <Statement> <Statement List Prime>\n")
     Statement()
-    if current_token['lexeme'] != '#':  #TODO: MIGHT NEED TO CHANGE THIS
+    if current_token['lexeme'] != '#':
         StatementListPrime()
     
 
@@ -499,9 +484,6 @@ def Assign():
         with open(output_file, "a") as file:
             file.write("\t<Assign> ::= <Identifier> = <Expression> ;\n")
     if current_token['token'] == 'identifier':
-        # insert_symbol_table(idenifier, memory_address, type)
-        # save the identifier for later use
-        # TODO: generate instruction here 
         save = current_token['lexeme']
         get_next_token()
         print_token()
@@ -754,9 +736,6 @@ def Scan():
         if current_token['lexeme'] == '(':
             get_next_token()
             print_token()
-            # TODO: fix this part in ids 
-            # gen_instruction("POPM", get_address(current_token['lexeme']))
-            # LAST_INSTRUCTION = "POPM"
             IDs()
             if current_token['lexeme'] == ')':
                 get_next_token()
@@ -810,8 +789,6 @@ def While():
         with open(output_file, "a") as file:
             file.write("\t<While> ::= while ( <Condition> ) <Statement>\n")
     if current_token['lexeme'] == 'while':
-        # get_address(identifier)
-        # TODO: test if this instruction address works 
         address = INSTRUCTION_ADDRESS
         gen_instruction("LABEL", None)
         get_next_token()
@@ -825,7 +802,6 @@ def While():
                 print_token()
                 Statement()
                 gen_instruction("JUMP", address)
-                # TODO: do back_patch
                 back_patch(INSTRUCTION_ADDRESS)
             else:
                 
@@ -942,14 +918,12 @@ def ExpressionPrime():
         get_next_token()
         print_token()
         Term()
-        # TODO: test if this is working
         gen_instruction("ADD", None)
         ExpressionPrime()
     elif current_token['lexeme'] == '-':
         get_next_token()
         print_token()
         Term()
-        # TODO: test if this is working 
         gen_instruction("SUB", None)
         ExpressionPrime()
     else:
@@ -980,14 +954,12 @@ def TermPrime():
         get_next_token()
         print_token()
         Factor()
-        # TODO: test this 
         gen_instruction("MUL", None)
         TermPrime()
     elif current_token['lexeme'] == '/':
         get_next_token()
         print_token()
         Factor()
-        # TODO: test this 
         gen_instruction("DIV", None)
         TermPrime()
     else:
@@ -1005,12 +977,8 @@ def Factor():
     if current_token['lexeme'] == '-':
         get_next_token()
         print_token()
-        # TODO: TEST IF THIS WORKS 
-        # TODO: tjos os [romtomg immecessary push m
-        # gen_instruction("PUSHM", get_address(current_token['lexeme']) * -1)
         Primary()
     else:
-        # gen_instruction("PUSHM", get_address(current_token['lexeme']))
         Primary()
 
 
@@ -1023,13 +991,11 @@ def Primary():
         with open(output_file, "a") as file:
             file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false\n")
     if current_token['token'] == 'identifier':
-        # TODO: test if this works
         gen_instruction("PUSHM", get_address(current_token['lexeme']))
         get_next_token()
         print_token()
         PrimaryPrime()
     elif current_token['token'] == 'integer':
-        # TODO: test that pushi is working
         gen_instruction("PUSHI", current_token['lexeme'])
         get_next_token()
         print_token()
@@ -1126,7 +1092,6 @@ def read_file(file_name):
                 char = file.read(1)
                 if not char:
                     break  # End of file, we exit loop
-                # TODO: CHECK IF THIS FIXES ISSUE WITH NEWLINES
                 # check for new line character
                 if char == '\n':
                     if word:
@@ -1398,9 +1363,7 @@ def analyze_file():
                 read_file(file_name)
                 commentRemoval(words)
                 Rat23F()        # Run the syntax analyzer
-                # TODO: check that this works 
                 print_symbol_table()
-                # TODO: check assembly table works 
                 print_assembly_code()
                 break
         except FileNotFoundError:
@@ -1428,7 +1391,7 @@ def main():
             analyze_file()
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
-    # perhaps ask the user if they want to print syntax rules 
+
 
 
 if __name__ == "__main__":
