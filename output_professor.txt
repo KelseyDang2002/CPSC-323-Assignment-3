@@ -208,7 +208,7 @@ Assembly Code Listing:
 8			PUSHM			7000
 9			PUSHM			7001
 10			LES			
-11			JUMPZ			
+11			JUMPZ			21
 12			PUSHM			7002
 13			PUSHM			7000
 14			ADD			

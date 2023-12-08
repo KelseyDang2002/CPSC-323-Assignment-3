@@ -41,8 +41,8 @@ assembly_code = []
 # example of object in assembly code list
 # ['Address': 1, 'Operation': 'PUSHI', 'Operand': 0]
 
-# TODO: do this 
-# make variable for specific instruction for pushm and popm 
+# stack for backtrack 
+JUMP_STACK = []
 
 
 
@@ -135,18 +135,23 @@ def get_address(identifier):
     return None
 
 
-# def back_patch(jump_address)
+def back_patch(jump_address):
+    """This function is used to back patch the jump instructions"""
+    global JUMP_STACK, assembly_code
+    address = JUMP_STACK[0]
+    JUMP_STACK.pop(0)
+    assembly_code[address -1]['Operand'] = jump_address
 
 
-# def push_jumpstack(instruction_address)
+def push_jumpstack(instruction_address):
+    """This function is used to push the instruction address to the jump stack"""
+    global JUMP_STACK
+    JUMP_STACK.insert(0, instruction_address)
 
 
 def gen_instruction(operation, operand = None):
     """This function is used to generate assembly code instructions"""
     global assembly_code, INSTRUCTION_ADDRESS
-    # need to handle different instructions 
-    # if instruction == 'PUSHI': for example
-    # 
     # Operator      Operand
     # ____________________________________
     # I1) PUSHI     {Integer Value}
@@ -191,7 +196,7 @@ def change_switch():
         switch = False
 
 def get_next_token():
-    global current_token, token_index
+    global current_token, token_index, switch
     if token_index < len(tokens):
         current_token = tokens[token_index]
         token_index += 1
@@ -199,7 +204,8 @@ def get_next_token():
         print("\nReached end of file without parsing errors.\n")
         with open(output_file, "a") as file:
             file.write("\nReached end of file without parsing errors.\n\n")
-        change_switch()
+        switch = True
+        # change_switch()
         # exit_syntax_analyzer()
     
 
@@ -555,7 +561,7 @@ def If():
                 get_next_token()
                 print_token()
                 Statement()
-                # back_patch(instruction_address)
+                back_patch(INSTRUCTION_ADDRESS)
                 IfPrime()
             else:
                 
@@ -820,7 +826,7 @@ def While():
                 Statement()
                 gen_instruction("JUMP", address)
                 # TODO: do back_patch
-                # back_patch(instruction_address) ???
+                back_patch(INSTRUCTION_ADDRESS)
             else:
                 
                 print(f"Error: Expected ')' at line {current_token['line']}.")
@@ -853,7 +859,7 @@ def While():
 # Rule 30
 # R30) <Condition> ::= <Expression> <Relop> <Expression>
 def Condition():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, INSTRUCTION_ADDRESS
     if switch == False:
         print("\t<Condition> ::= <Expression> <Relop> <Expression>")
         with open(output_file, "a") as file:
@@ -865,27 +871,27 @@ def Condition():
     # handle instructions here 
     if operand == '==':
         gen_instruction("EQU", None)
-        # push_jumpstack(instruction_address) ??? 
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
     elif operand == '!=':
         gen_instruction("NEQ", None)
-        # push_jumpstack(instruction_address) ??? 
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
     elif operand == '>':
         gen_instruction("GRT", None)
-        # push_jumpstack(instruction_address) ??? 
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
     elif operand == '<':
         gen_instruction("LES", None)
-        # push_jumpstack(instruction_address) ??? 
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
     elif operand == '<=':
         gen_instruction("LEQ", None)
-        # push_jumpstack(instruction_address) ???
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
     elif operand == '=>':
         gen_instruction("GEQ", None)
-        # push_jumpstack(instruction_address) ??? 
+        push_jumpstack(INSTRUCTION_ADDRESS)
         gen_instruction("JUMPZ", None)
 
 
@@ -1354,7 +1360,7 @@ def analyze_file():
     global current_line, output_file, switch, token_index, LAST_IDENTIFIER_TYPE, MEMORY_ADDRESS, INSTRUCTION_ADDRESS
     while True:
         try:
-            file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ")
+            file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ").strip().lower()
             if file_name == 'q':
                 print("\nThank you for using our Lexical Analyzer!\n")
                 print("Exiting program...")
@@ -1367,8 +1373,19 @@ def analyze_file():
                 # clear file in case that there was a previous analysis
                 with open(output_file, "w") as file:
                     file.write("")  # This will clear the file's contents
+                # ask user if they want syntax rules printed
+                while True:
+                    print_rules = input("Do you want to print the syntax rules? (yes/no): ").strip().lower()
+                    if print_rules == 'yes' or print_rules == 'y':
+                        switch = False
+                        break
+                    elif print_rules == 'no' or print_rules == 'n':
+                        switch = True
+                        break
+                    else:
+                        print("Invalid input. Please enter 'yes' or 'no'.")
                 print(f"\nAnalyzing file '{file_name}'...\n")
-                switch = False  # Set switch to False to print the rules
+                # switch = False  # Set switch to False to print the rules
                 words.clear()  # Clear the list of words from previous analyses
                 tokens.clear()  # Clear the list of tokens from previous analyses
                 symbol_table.clear()  # Clear the symbol table from previous analyses
