@@ -74,7 +74,7 @@ R35) <Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | epsilo
 
 R36) <Factor> ::= - <Primary> | <Primary>
 
-R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
+R37) <Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false
 
 R38) <Primary Prime> ::= epsilon | ( <IDs> )
 

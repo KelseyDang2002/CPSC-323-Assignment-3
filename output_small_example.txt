@@ -1,54 +1,36 @@
-Token: separator		Lexeme: #
-	<Rat23F> ::=  # <Opt Declaration List> <Statement List> #
-Token: keyword			Lexeme: integer
-	<Opt Declaration List> ::= <Declaration List> | <Empty>
-	<Declaration List> ::= <Declaration> ; <Declaration List Prime>
-	<Declaration> ::= <Qualifier> <IDs>
-	<Qualifier> ::= integer | boolean | real
-Token: identifier		Lexeme: n
-	<IDs> ::= <Identifier> <IDs Prime>
-Token: separator		Lexeme: ;
-	<IDs Prime> ::= , <IDs> | <Empty>
-	<Empty> ::= <Empty>
-Token: keyword			Lexeme: get
-	<Declaration List Prime> ::= <Declaration List> | <Empty>
-	<Empty> ::= <Empty>
-	<Empty> ::= <Empty>
-	<Statement List> ::= <Statement> <Statement List Prime>
-	<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
-	<Scan> ::= get ( <IDs> );
-Token: separator		Lexeme: (
-Token: identifier		Lexeme: n
-	<IDs> ::= <Identifier> <IDs Prime>
-Token: separator		Lexeme: )
-	<IDs Prime> ::= , <IDs> | <Empty>
-	<Empty> ::= <Empty>
-Token: separator		Lexeme: ;
-Token: keyword			Lexeme: put
-	<Statement List Prime> ::= <Statement List> | <Empty>
-	<Statement List> ::= <Statement> <Statement List Prime>
-	<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
-	<Print> ::= put ( <Expression> );
-Token: separator		Lexeme: (
-Token: identifier		Lexeme: factorial
-	<Expression> ::= <Term> <Expression Prime>
-	<Term> ::= <Factor> <Term Prime>
-	<Factor> ::= - <Primary> | <Primary>
-	<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | <Real> | true | false
-Token: separator		Lexeme: (
-	<Primary Prime> ::= <Empty> | ( <IDs> )
-Token: identifier		Lexeme: n
-	<IDs> ::= <Identifier> <IDs Prime>
-Token: separator		Lexeme: )
-	<IDs Prime> ::= , <IDs> | <Empty>
-	<Empty> ::= <Empty>
-Token: separator		Lexeme: )
-	<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>
-	<Empty> ::= <Empty>
-	<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>
-	<Empty> ::= <Empty>
-Token: separator		Lexeme: ;
-Token: separator		Lexeme: #
 
 Reached end of file without parsing errors.
+
+Symbol Table:
+Identifier		Memory Location		Type
+a			7000			integer
+Identifier		Memory Location		Type
+b			7001			integer
+Identifier		Memory Location		Type
+c			7002			integer
+Identifier		Memory Location		Type
+result			7003			integer
+Identifier		Memory Location		Type
+something			7004			integer
+
+
+Assembly Code Listing:
+1			STDIN			
+2			POPM			7000
+3			POPM			7001
+4			POPM			7002
+5			PUSHI			1
+6			POPM			7003
+7			PUSHM			7004
+8			POPM			7003
+9			PUSHM			7000
+10			PUSHM			7001
+11			MUL			
+12			PUSHM			7000
+13			PUSHM			7002
+14			MUL			
+15			SUB			
+16			POPM			7003
+17			PUSHM			7003
+18			STDOUT			
 
