@@ -55,9 +55,10 @@ DECLARATION_LIST = True
 # ******************************SYMBOL TABLE AND ASSEMBLY CODE STARTS HERE*********************************************************
 # *********************************************************************************************************************************
 """All the rules and functions for assignment 3 are here"""
-def exit_syntax_analyzer():
+def exit_syntax_analyzer(delay = 10):
     print("\nExiting Syntax Analyzer...")
-    time.sleep(2)
+    print(f"Program will exit in {delay} seconds.")
+    time.sleep(delay)
     print("\nSyntax Analyzer Exited.")
     sys.exit(1)
 
