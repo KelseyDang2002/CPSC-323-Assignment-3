@@ -1,7 +1,9 @@
-[* Function to calculate the factorial of an integer using recursion *]
 #
-    [* Main program *]
-    integer n;
-    get(n);
-    put(factorial(n));
+    [* Small Example Program *]
+    integer a, b, c, result;
+
+    get(a, b, c);
+    result = a * b - a * c;
+    put(result);
+    ret;
 #

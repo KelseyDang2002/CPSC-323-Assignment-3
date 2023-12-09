@@ -1,10 +1,20 @@
 #
-	[* Main program *]
-	integer numOne, numTwo;
-	real tempInF;
-	get(numOne, numTwo, tempInF);
-	put(AddNums(numOne, numTwo));
-	put(SubNums(numOne, numTwo));
-	put(ConvertToCelcius(tempInF));
-	ret;
+    [* Medium Example Program *]
+    integer x, y, z, result, i;
+
+    i = 1;
+    get(x, y, z);
+    result = x * y - x * z;
+    put(result);
+    
+    if (x > 5) {
+        while (i < x) {
+            x = x * 2;
+            y = y + 2;
+            z = z + 1;
+        }
+        put(x + y + z);
+    }
+    endif
+    ret;
 #

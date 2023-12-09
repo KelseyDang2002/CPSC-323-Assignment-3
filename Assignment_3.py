@@ -47,6 +47,8 @@ assembly_code = []
 # stack for backtrack 
 JUMP_STACK = []
 
+# variable to check if we are in declaration list
+DECLARATION_LIST = True
 
 
 # *********************************************************************************************************************************
@@ -113,10 +115,32 @@ def check_symbol_table(identifier):
 
 def insert_symbol_table(identifier):
     """This function is used to insert a new identifier into the symbol table"""
-    global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE
-    if not check_symbol_table(identifier['lexeme']):
-        symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
-        MEMORY_ADDRESS += 1
+    global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE, DECLARATION_LIST
+    if LAST_IDENTIFIER_TYPE == None:
+        print("Error: Identifier type not defined.")
+        print("Please define the type of the identifier.")
+        with open(output_file, "a") as file:
+            file.write("Error: Identifier type not defined.\n")
+            file.write("Please define the type of the identifier.\n")
+        exit_syntax_analyzer()
+    elif LAST_IDENTIFIER_TYPE != 'integer' and LAST_IDENTIFIER_TYPE != 'bool':
+        print("Error: Identifier type not valid.")
+        print("Please define the type of the identifier. Expected 'integer' or 'bool'")
+        with open(output_file, "a") as file:
+            file.write("Error: Identifier type not valid.\n")
+            file.write("Please define the type of the identifier. Expected 'integer' or 'bool'\n")
+        exit_syntax_analyzer()
+    if DECLARATION_LIST == True:
+        if not check_symbol_table(identifier['lexeme']):
+            symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
+            MEMORY_ADDRESS += 1
+        else:
+            print(f"Error: Identifier '{identifier['lexeme']}' already declared at line {identifier['line']}.")
+            print("Choose a new unique identifier name.")
+            with open(output_file, "a") as file:
+                file.write(f"Error: Identifier '{identifier['lexeme']}' already declared at line {identifier['line']}.\n")
+                file.write("Choose a new unique identifier name.\n")
+            exit_syntax_analyzer()
 
 def get_address(identifier):
     """This function is used to get the memory location of an identifier in the symbol table"""
@@ -201,7 +225,7 @@ def get_next_token():
 # Rule 1
 # R1) <Rat23F> ::= # <Opt Declaration List> <Statement List> #
 def Rat23F():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, DECLARATION_LIST
     get_next_token()
     print_token()
     # print rule
@@ -213,6 +237,7 @@ def Rat23F():
         get_next_token()
         print_token()
         OptDeclarationList()
+        DECLARATION_LIST = False
         StatementList()
         if current_token['lexeme'] == '#':
             get_next_token()
@@ -336,19 +361,16 @@ def Declaration():
 # Rule 16
 # R16) <IDs> ::= <Identifier> <IDs Prime>
 def IDs():
-    global current_token, switch, output_file
+    global current_token, switch, output_file, DECLARATION_LIST
     if switch == False:
         print("\t<IDs> ::= <Identifier> <IDs Prime>")
         with open(output_file, "a") as file:
             file.write("\t<IDs> ::= <Identifier> <IDs Prime>\n")
     if current_token['token'] == 'identifier':
-        # add identifier to symbol table
-        address = get_address(current_token['lexeme'])
-        if address == None:
+        if DECLARATION_LIST == True:
             insert_symbol_table(current_token)
         else:
             gen_instruction("POPM", get_address(current_token['lexeme']))
-            
         get_next_token()
         print_token()
         IDsPrime()
@@ -991,7 +1013,17 @@ def Primary():
         with open(output_file, "a") as file:
             file.write("\t<Primary> ::= <Identifier> <Primary Prime> | <Integer> | ( <Expression> ) | true | false\n")
     if current_token['token'] == 'identifier':
-        gen_instruction("PUSHM", get_address(current_token['lexeme']))
+        address = get_address(current_token['lexeme'])
+        # TODO: ADD ERROR HERE 
+        if address == None:
+            print(f"Error: Identifier '{current_token['lexeme']}' not declared at line {current_token['line']}.")
+            print("Identifier should be declared prior to use.")
+            with open(output_file, "a") as file:
+                file.write(f"Error: Identifier '{current_token['lexeme']}' not declared at line {current_token['line']}.\n")
+                file.write("Identifier should be declared prior to use.\n")
+            exit_syntax_analyzer()
+        else:
+            gen_instruction("PUSHM", address)
         get_next_token()
         print_token()
         PrimaryPrime()
@@ -1322,7 +1354,7 @@ def write_tokens(tokens):
 
 # Function to analyze a file
 def analyze_file():
-    global current_line, output_file, switch, token_index, LAST_IDENTIFIER_TYPE, MEMORY_ADDRESS, INSTRUCTION_ADDRESS
+    global current_line, output_file, switch, token_index, LAST_IDENTIFIER_TYPE, MEMORY_ADDRESS, INSTRUCTION_ADDRESS, DECLARATION_LIST
     while True:
         try:
             file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ").strip().lower()
@@ -1357,6 +1389,7 @@ def analyze_file():
                 assembly_code.clear()  # Clear the assembly code from previous analyses
                 current_line = 1  # Reset the current line to 1
                 token_index = 0  # Reset the token index to 0
+                DECLARATION_LIST = True  # Set the declaration list to True
                 LAST_IDENTIFIER_TYPE = None # Reset the last identifier type to None
                 MEMORY_ADDRESS = 7000 # Reset the memory address to 7000
                 INSTRUCTION_ADDRESS = 1 # Reset the instruction address to 1
