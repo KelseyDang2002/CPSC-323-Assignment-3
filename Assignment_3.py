@@ -123,7 +123,7 @@ def insert_symbol_table(identifier):
             file.write("Error: Identifier type not defined.\n")
             file.write("Please define the type of the identifier.\n")
         exit_syntax_analyzer()
-    if LAST_IDENTIFIER_TYPE != 'integer' or LAST_IDENTIFIER_TYPE != 'bool':
+    elif LAST_IDENTIFIER_TYPE != 'integer' and LAST_IDENTIFIER_TYPE != 'bool':
         print("Error: Identifier type not valid.")
         print("Please define the type of the identifier. Expected 'integer' or 'bool'")
         with open(output_file, "a") as file:

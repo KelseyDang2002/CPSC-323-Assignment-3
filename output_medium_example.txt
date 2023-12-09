@@ -1,2 +1,63 @@
-Error: Identifier 'i' already declared at line 3.
-Choose a new unique identifier name.
+
+Reached end of file without parsing errors.
+
+Symbol Table:
+Identifier		Memory Location		Type
+x			7000			integer
+Identifier		Memory Location		Type
+y			7001			integer
+Identifier		Memory Location		Type
+z			7002			integer
+Identifier		Memory Location		Type
+result			7003			integer
+Identifier		Memory Location		Type
+i			7004			integer
+
+
+Assembly Code Listing:
+1			PUSHI			1
+2			POPM			7004
+3			STDIN			
+4			POPM			7000
+5			POPM			7001
+6			POPM			7002
+7			PUSHM			7000
+8			PUSHM			7001
+9			MUL			
+10			PUSHM			7000
+11			PUSHM			7002
+12			MUL			
+13			SUB			
+14			POPM			7003
+15			PUSHM			7003
+16			STDOUT			
+17			PUSHM			7000
+18			PUSHI			5
+19			GRT			
+20			JUMPZ			45
+21			LABEL			
+22			PUSHM			7004
+23			PUSHM			7000
+24			LES			
+25			JUMPZ			39
+26			PUSHM			7000
+27			PUSHI			2
+28			MUL			
+29			POPM			7000
+30			PUSHM			7001
+31			PUSHI			2
+32			ADD			
+33			POPM			7001
+34			PUSHM			7002
+35			PUSHI			1
+36			ADD			
+37			POPM			7002
+38			JUMP			21
+39			PUSHM			7000
+40			PUSHM			7001
+41			ADD			
+42			PUSHM			7002
+43			ADD			
+44			STDOUT			
+45			LABEL			
+
