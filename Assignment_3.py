@@ -79,15 +79,15 @@ def print_symbol_table():
     """This function is used to print all the values in the symbol table"""
     global output_file
     print("Symbol Table:")
-    print("Identifier\t\tMemory Location\t\tType")
+    print("Memory Location\t\tType\t\tIdentifier")
     for i in symbol_table:
-        print(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}")
+        print(f"{i['Memory Location']}\t\t\t{i['Type']}\t\t{i['Identifier']}")
     print("\n")
     with open(output_file, "a") as file:
         file.write("Symbol Table:\n")
+        file.write("Memory Location\t\tType\t\t\tIdentifier\n")
         for i in symbol_table:
-            file.write("Identifier\t\tMemory Location\t\tType\n")
-            file.write(f"{i['Identifier']}\t\t\t{i['Memory Location']}\t\t\t{i['Type']}\n")
+            file.write(f"{i['Memory Location']}\t\t\t\t{i['Type']}\t\t\t{i['Identifier']}\n")
         file.write("\n")
 
 
@@ -1359,7 +1359,7 @@ def analyze_file():
         try:
             file_name = input("Please enter the name of the file you want to analyze (or 'q' to quit): ").strip().lower()
             if file_name == 'q':
-                print("\nThank you for using our Lexical Analyzer!\n")
+                print("\nThank you for using our Assignment 3!\n")
                 print("Exiting program...")
                 time.sleep(2)
                 sys.exit(0) # Exit the loop and quit the program
@@ -1416,7 +1416,7 @@ def main():
     while True:
         another_analysis = input("Do you want to analyze another file? (yes/no): ").strip().lower()
         if another_analysis == 'no' or another_analysis == 'n':
-            print("\nThank you for using our Syntax Analyzer!\n")
+            print("\nThank you for using our Assignment 3!\n")
             print("Exiting program...")
             time.sleep(2)
             sys.exit(0)  # Exit the program if the user does not want to analyze another file

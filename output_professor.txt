@@ -18,6 +18,20 @@ Token: identifier		Lexeme: sum
 Token: separator		Lexeme: ;
 	<IDs Prime> ::= , <IDs> | <Empty>
 	<Empty> ::= <Empty>
+Token: keyword			Lexeme: bool
+	<Declaration List Prime> ::= <Declaration List> | <Empty>
+	<Declaration List> ::= <Declaration> ; <Declaration List Prime>
+	<Declaration> ::= <Qualifier> <IDs>
+	<Qualifier> ::= integer | boolean
+Token: identifier		Lexeme: y
+	<IDs> ::= <Identifier> <IDs Prime>
+Token: separator		Lexeme: ,
+	<IDs Prime> ::= , <IDs> | <Empty>
+Token: identifier		Lexeme: n
+	<IDs> ::= <Identifier> <IDs Prime>
+Token: separator		Lexeme: ;
+	<IDs Prime> ::= , <IDs> | <Empty>
+	<Empty> ::= <Empty>
 Token: identifier		Lexeme: sum
 	<Declaration List Prime> ::= <Declaration List> | <Empty>
 	<Empty> ::= <Empty>
@@ -189,12 +203,12 @@ Token: separator		Lexeme: #
 Reached end of file without parsing errors.
 
 Symbol Table:
-Identifier		Memory Location		Type
-i			7000			integer
-Identifier		Memory Location		Type
-max			7001			integer
-Identifier		Memory Location		Type
-sum			7002			integer
+Memory Location		Type			Identifier
+7000				integer			i
+7001				integer			max
+7002				integer			sum
+7003				bool			y
+7004				bool			n
 
 
 Assembly Code Listing:
