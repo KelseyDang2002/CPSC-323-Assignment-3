@@ -116,6 +116,20 @@ def check_symbol_table(identifier):
 def insert_symbol_table(identifier):
     """This function is used to insert a new identifier into the symbol table"""
     global symbol_table, MEMORY_ADDRESS, LAST_IDENTIFIER_TYPE, DECLARATION_LIST
+    if LAST_IDENTIFIER_TYPE == None:
+        print("Error: Identifier type not defined.")
+        print("Please define the type of the identifier.")
+        with open(output_file, "a") as file:
+            file.write("Error: Identifier type not defined.\n")
+            file.write("Please define the type of the identifier.\n")
+        exit_syntax_analyzer()
+    if LAST_IDENTIFIER_TYPE != 'integer' or LAST_IDENTIFIER_TYPE != 'bool':
+        print("Error: Identifier type not valid.")
+        print("Please define the type of the identifier. Expected 'integer' or 'bool'")
+        with open(output_file, "a") as file:
+            file.write("Error: Identifier type not valid.\n")
+            file.write("Please define the type of the identifier. Expected 'integer' or 'bool'\n")
+        exit_syntax_analyzer()
     if DECLARATION_LIST == True:
         if not check_symbol_table(identifier['lexeme']):
             symbol_table.append({'Identifier': identifier['lexeme'], 'Memory Location': MEMORY_ADDRESS, 'Type': LAST_IDENTIFIER_TYPE})
